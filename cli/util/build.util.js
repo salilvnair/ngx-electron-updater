@@ -3,6 +3,7 @@ const chalk = require('chalk');
 const shellJs = require('shelljs');
 const { ngxeu_scripts } = require('../package.json')
 const jsonfile = require('jsonfile');
+let ngxeu_include = require('./ngxeu.util');
 
 module.exports =  {
 
@@ -31,20 +32,18 @@ module.exports =  {
     },
 
     modifyPackageJson: (args, appName, electronBuildCmd) =>{
-        if(args.default){
-            let defaultBuildSrc = "build";
-            if(args.src){
-                defaultBuildSrc = src; 
+        let packageJson = jsonfile.readFileSync('./package.json');
+        if(args.default || !packageJson.build){
+            let includeData = ngxeuIncludeData();
+            let finalFilesArray = ["**/*"]
+            if(includeData){
+                finalFilesArray = finalFilesArray.concat(includeData);
             }
-            let packageJson = jsonfile.readFileSync('./package.json');
             let defautBuild = {
                 "asar":false,
                 "appId":appName,
                 "productName":appName,
-                "files": [
-                    "**/*",
-                    defaultBuildSrc
-                ],
+                "files": finalFilesArray,
                 "mac": {
                 "target": [
                     "zip"
@@ -58,17 +57,18 @@ module.exports =  {
 
             }
             packageJson.build = defautBuild;
-            if(packageJson.scripts){
-                packageJson.scripts["ngxeu-build"] = electronBuildCmd;
-            }
-            else{
-                let scripts = {};
-                scripts["ngxeu-build"] = electronBuildCmd;
-                packageJson.scripts = scripts;
-            }
-            console.log(packageJson);
-            jsonfile.writeFileSync('./package.json',packageJson,{spaces: 2, EOL: '\r\n'});
         }
+        
+        if(packageJson.scripts){
+            packageJson.scripts["ngxeu-build"] = electronBuildCmd;
+        }
+        else{
+            let scripts = {};
+            scripts["ngxeu-build"] = electronBuildCmd;
+            packageJson.scripts = scripts;
+        }
+        console.log(packageJson);
+        jsonfile.writeFileSync('./package.json',packageJson,{spaces: 2, EOL: '\r\n'});
     },
 
     prepareElectronBuildCmd: (args) => {
@@ -90,18 +90,16 @@ module.exports =  {
         return electron_build_cmd;
     },
     showDefaultBuildConfig: (args, appName) => {
-        let defaultBuildSrc = "build";
-        if(args.src){
-            defaultBuildSrc = src; 
+        let includeData = ngxeuIncludeData();
+        let finalFilesArray = ["**/*"]
+        if(includeData){
+            finalFilesArray = finalFilesArray.concat(includeData);
         }
         let defautBuild = {
             "asar":false,
             "appId":appName,
             "productName":appName,
-            "files": [
-                "**/*",
-                defaultBuildSrc
-            ],
+            "files": finalFilesArray,
             "mac": {
             "target": [
                 "zip"
@@ -138,4 +136,13 @@ function buildElectronApp(appName) {
     console.log(chalk.green('\nPackaging... ' +chalk.cyan(appName)+' app.'));
     let runElectronBuild = "npm run ngxeu-build";
     shellJs.exec(runElectronBuild);
+}
+
+function ngxeuIncludeData(){
+    if(ngxeu_include.parse('./.ngxeuinclude')){
+        return ngxeu_include.parse('./.ngxeuinclude').patterns;
+    }
+    else{
+        return null;
+    }
 }

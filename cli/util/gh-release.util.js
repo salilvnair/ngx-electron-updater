@@ -59,7 +59,7 @@ module.exports = {
                 for (let i = 0; i < files.length; ++i) {
                     const file = files[i];
                     console.log(`  #${chalk.cyan(i + 1)}: name="${chalk.cyan(path.basename(file))}" filePath="${chalk.cyan(file)}"`);
-                    await octokit.repos.uploadReleaseAsset({
+                    const res = await octokit.repos.uploadReleaseAsset({
                         url: release.upload_url,
                         file: fs.createReadStream(file),
                         headers: {
@@ -68,6 +68,7 @@ module.exports = {
                         },
                         name: path.basename(file),
                     });
+                    console.log("res",res);
                 }
             }
         } catch (err) {

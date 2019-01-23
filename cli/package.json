@@ -29,6 +29,7 @@
     "lodash": "^4.17.11",
     "mime-types": "^2.1.21",
     "minimist": "^1.2.0",
+    "publish-release": "^1.6.0",
     "shelljs": "^0.8.3",
     "touch": "^3.1.0"
   },

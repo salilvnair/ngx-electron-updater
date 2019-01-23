@@ -37,11 +37,15 @@
       break     
 
       case 'releases':
-      require('./cmds/releases')(args,false)
+      require('./cmds/releases')(args)
       break  
 
       case 'build':
-      require('./cmds/build')(args,false)
+      require('./cmds/build')(args)
+      break 
+
+      case 'test':
+      require('./cmds/test')(args)
       break 
 
       default:
