@@ -9,8 +9,8 @@
     "ngxeu": "bin/ngxeu"
   },
   "ngxeu_scripts": {
-    "build":"build",
-    "build-debug":"env DEBUG=electron-builder build"
+    "build": "build",
+    "build-debug": "env DEBUG=electron-builder build"
   },
   "preferGlobal": true,
   "engines": {
@@ -31,5 +31,24 @@
     "minimist": "^1.2.0",
     "shelljs": "^0.8.3",
     "touch": "^3.1.0"
+  },
+  "build": {
+    "asar": false,
+    "appId": "test",
+    "productName": "test",
+    "files": [
+      "**/*",
+      "build"
+    ],
+    "mac": {
+      "target": [
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "zip"
+      ]
+    }
   }
 }

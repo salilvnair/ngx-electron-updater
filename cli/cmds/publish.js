@@ -5,6 +5,11 @@ module.exports = async (args, draft) => {
     try {
         let files;
         let tag;
+        if(!args._[1]){
+            console.log(chalk.red('\nError:App name is not specified please specify using command:')+' ngxeu publish '+chalk.cyan('MyApp'));
+            process.exit();
+        }
+        let appName = args._[1];
         if(args.f || args.file) {
             let fileArgs = args.f || args.file;
             files = [];
@@ -27,11 +32,6 @@ module.exports = async (args, draft) => {
         if(args.release) {
             draft = false;
         }
-        if(!args._[1]){
-            console.log(chalk.red('\nError:App name is not specified please specify using command:')+' ngxeu publish '+chalk.cyan('MyApp'));
-            process.exit();
-        }
-        let appName = args._[1];
         processPublish(tag, files, draft,appName);
         
     } catch (err) {
