@@ -1,0 +1,11 @@
+{
+  "name": "ngx-electron-updater",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^7.0.0",
+    "@angular/core": "^7.0.0",
+    "electron": "^4.0.0",
+    "ngx-electron": "^2.1.1",
+    "follow-redirects": "^1.6.1"
+  }
+}
