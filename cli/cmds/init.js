@@ -1,4 +1,4 @@
-const github = require('../util/github');
+const github = require('../util/github-inquirer.util-inquirer.util');
 const chalk = require('chalk');
 module.exports = async (args) => {
     try {

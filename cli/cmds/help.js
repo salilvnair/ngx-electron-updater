@@ -52,10 +52,13 @@ const menus = {
     usage: ngxeu ${chalk.cyan('publish')} <options>
 
     options:
-        ${chalk.green('[optional] ')}${chalk.cyan(' --draft')}\t\t\t\t\tupload assets as draft version ${chalk.green('(default)')} 
-        ${chalk.green('[optional] ')}${chalk.cyan(' --release')}\t\t\t\t\tupload assets as release version   
-        ${chalk.red('[mandatory]')}${chalk.cyan(' --tag, -t ')}${chalk.yellow('<tagName>')}\t\t\t\trelease/draft tag version 
-        ${chalk.red('[mandatory]')}${chalk.cyan(' --file, -f ')}${chalk.yellow('<fileNameWithRelativePath>')}\tfile(s) to be uploaded`,
+        ${chalk.green('[optional] ')}${chalk.cyan(' --draft')}\t\t\tupload assets as draft version ${chalk.green('(default)')} 
+        ${chalk.green('[optional] ')}${chalk.cyan(' --release')}\t\t\tupload assets as release version   
+        ${chalk.green('[optional] ')}${chalk.cyan(' --name')}\t\t\trelease name ${chalk.green('(if not given will be defaulted to tag name)')} 
+        ${chalk.green('[optional] ')}${chalk.cyan(' --target')}\t\t\tbranch name ${chalk.green('(if not given will be defaulted to master)')} 
+        ${chalk.green('[optional] ')}${chalk.cyan(' --notes')}\t\t\tany notes ${chalk.green('(if not given will be defaulted to empty)')} 
+        ${chalk.red('[mandatory]')}${chalk.cyan(' --tag,  -t ')}\t\t\trelease/draft tag version 
+        ${chalk.red('[mandatory]')}${chalk.cyan(' --file, -f ')}\t\t\tfile(s) to be uploaded, should be the relative path of the files`,
 //----------------------------------------------------------------// 
     releases: `
     usage: ngxeu ${chalk.cyan('releases')}${chalk.green(' <appName>')}  <options>

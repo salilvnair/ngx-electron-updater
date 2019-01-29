@@ -1,5 +1,5 @@
 const ghRelease = require('../util/gh-release.util')
-const github = require('../util/github');
+const github = require('../util/github-inquirer.util');
 const chalk = require('chalk');
 const jsonfile = require('jsonfile')
 module.exports = async (args) => {

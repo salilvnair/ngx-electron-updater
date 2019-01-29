@@ -1,4 +1,4 @@
-const inquirer = require('./inquirer');
+const inquirer = require('./inquirer.util');
 const pkg = require('../package.json');
 const Configstore = require('configstore');
 const conf = new Configstore(pkg.name);
@@ -39,10 +39,10 @@ module.exports = {
         }
     },
 
-    uploadReleaseAsset: (token) => { 
-        var releaseAssetCmd = "sh ./util/gh-release.util.sh gh_token="+token+" owner=salilvnair repo=vdemy tag=v0.0.3 filename=./test.txt"
-        console.log(releaseAssetCmd);
-        console.log(shell.exec(releaseAssetCmd)); 
-    }
+    // uploadReleaseAsset: (token) => { 
+    //     var releaseAssetCmd = "sh ./util/gh-release.util.sh gh_token="+token+" owner=salilvnair repo=vdemy tag=v0.0.3 filename=./test.txt"
+    //     console.log(releaseAssetCmd);
+    //     console.log(shell.exec(releaseAssetCmd)); 
+    // }
 
 };
