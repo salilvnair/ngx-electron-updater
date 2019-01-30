@@ -1,16 +1,34 @@
-const inquirer = require('./inquirer');
+const inquirer = require('./inquirer.util');
 const chalk = require('chalk');
 const shellJs = require('shelljs');
 const { ngxeu_scripts } = require('../package.json')
 const jsonfile = require('jsonfile');
+const fs = require('fs');
 let ngxeu_include = require('./ngxeu.util');
+require('./date.util');
 
 module.exports =  {
 
     buildElectronApp: (appName) =>{
-        console.log(chalk.green('\nPackaging... ' +chalk.cyan(appName)+' app.'));
+        console.log(chalk.green('\nBumping the version... ' +chalk.cyan(appName)+'.'));
+        let updateVersionCmd = "npm version patch";
+        shellJs.exec(updateVersionCmd);
+        console.log(chalk.green('\nPackaging... ' +chalk.cyan(appName)+'.'));
         let runElectronBuild = "npm run ngxeu-build";
         shellJs.exec(runElectronBuild);
+    },
+
+    createReleaseInfo: (appName) =>{
+        console.log(chalk.green('\nCreating release info... ' +chalk.cyan(appName)+'.')); 
+        let packageJson = jsonfile.readFileSync('./package.json');
+        let currentVersion = packageJson.version;
+        let releaseDate = new Date().format("dd/mm/yyyy");
+        let releaseInfo = {
+            "name" : appName,
+            "version": currentVersion,
+            "released_at":releaseDate
+        }
+        jsonfile.writeFileSync('./app-release.json',releaseInfo,{spaces: 2, EOL: '\r\n'});  
     },
     
     installElectronBuilderPromt: async (appName) => {
@@ -30,7 +48,21 @@ module.exports =  {
         }
         return false;
     },
+    checkIfElectronProject :async(args, appName) =>{
+        if(fs.existsSync('./package.json')){
+            if(fs.existsSync('./main.js')){
+                return true;
+            }
+            else{
+                console.log(chalk.red.bold('\nCurrent directory is not a valid electron project directory, please choose a proper one!\n'));  
+            }
+        }
+        else{
+            console.log(chalk.red.bold('\nCurrent directory is not a npm managed project, please choose a proper one!\n'));  
+            return false;
+        }
 
+    },
     modifyPackageJson: (args, appName, electronBuildCmd) =>{
         let packageJson = jsonfile.readFileSync('./package.json');
         if(args.default || !packageJson.build){

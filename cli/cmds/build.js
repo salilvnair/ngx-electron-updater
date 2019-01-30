@@ -6,12 +6,16 @@ module.exports = async (args) => {
         process.exit();
     }
     let appName = args._[1];
+    
+    let isElectronProject = await buildUtil.checkIfElectronProject(args, appName);
+    if(!isElectronProject){
+        process.exit();
+    }
     if(args["show-default"]){
         buildUtil.showDefaultBuildConfig(args, appName);
         process.exit();
     }
     if(!await processElectronBuild(args, appName)){
-        console.log('electronBuildCmd');
         require('./help')(args);
         process.exit();
     }
@@ -19,7 +23,7 @@ module.exports = async (args) => {
 
  async function processElectronBuild(args, appName) {
     let electronBuildCmd = buildUtil.prepareElectronBuildCmd(args, appName);
-    console.log(electronBuildCmd);
+    //console.log(electronBuildCmd);
     if(electronBuildCmd){
         buildUtil.modifyPackageJson(args, appName, electronBuildCmd);
         if(!buildUtil.hasElectronBuilderInstalled()){
@@ -27,6 +31,7 @@ module.exports = async (args) => {
         }
         else{
             buildUtil.buildElectronApp(appName);
+            buildUtil.createReleaseInfo(appName);
         } 
         return true;
     }

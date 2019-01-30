@@ -11,7 +11,6 @@ var GITHUB_API_ROOT = 'https://api.github.com'
 
 function GithubPublishUtil (opts, cb) {
     if (!(this instanceof GithubPublishUtil)) return new GithubPublishUtil(opts, cb)
-  
     this.opts = (opts || {})
     this.cb = (cb || function noop () {})
   
@@ -119,7 +118,7 @@ GithubPublishUtil.prototype.publish = function publish () {
         if (!opts.assets || opts.assets.length === 0) return callback()
         if (results.createRelease.errors || !results.createRelease.upload_url) return callback(results.createRelease)
   
-        async.eachSeries(opts.assets, function (asset, callback) {
+        async.each(opts.assets, function (asset, callback) {
           var fileName = path.basename(asset)
           var uploadUri = results.createRelease.upload_url.split('{')[0] + '?name=' + fileName
   
@@ -129,6 +128,7 @@ GithubPublishUtil.prototype.publish = function publish () {
             self.emit('upload-asset', fileName)
   
             var stat = fs.statSync(asset)
+            self.emit('asset-info', fileName,stat.size);
             var rd = fs.createReadStream(asset)
             var us = request({
               method: 'POST',
@@ -155,7 +155,7 @@ GithubPublishUtil.prototype.publish = function publish () {
             var prog = progress({
                 length: stat.size,
                 time: 100
-            }, function (p) {
+            }, function (p) {            
               self.emit('upload-progress', fileName, p)
             })
   

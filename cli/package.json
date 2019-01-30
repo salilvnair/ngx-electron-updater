@@ -36,6 +36,7 @@
     "minimist": "^1.2.0",
     "multi-progress": "^2.0.0",
     "pretty-bytes": "^5.1.0",
+    "progress": "^2.0.3",
     "progress-stream": "^2.0.0",
     "request": "^2.88.0",
     "shelljs": "^0.8.3",

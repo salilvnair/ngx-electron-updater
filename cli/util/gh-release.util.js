@@ -41,39 +41,44 @@ module.exports = {
         options.prerelease = false;
         let githubPublishUtil = GithubPublishUtil(options,function(err, release){
             if (err) throw err
-            log.clear();
-            console.log('\nDone! Published at: ' + release.html_url)
-            process.exit(0)
+            var newLineToken = "";
+            files.forEach(element => {
+                newLineToken = newLineToken+"\n";
+            });
+            console.log(newLineToken+'Successfully published at: ' + release.html_url)
+            process.exit(0);
+        });
+        githubPublishUtil.on('asset-info', function (name,size) {
+            createBars(name,size);
         });
         githubPublishUtil.on('upload-progress', (name, progress)=>{            
-            notifyProgress(name, progress);
+            notifyMultipleProgress(name, progress);
         });
-        githubPublishUtil.on('upload-asset', function () {
-                       log.clear();
-        })
-        githubPublishUtil.on('uploaded-asset', function (name) {
-        })
+        githubPublishUtil.on('uploaded-asset', function () {
+            log.clear();
+        });
+
     }
     
 };
-let i = 0;
-function notifyProgress (name, progress) {
-    var pct = progress.percentage
-    var speed = prettyBytes(progress.speed)
-    const spinner = cliSpinners.clock;
-    const frames = spinner.frames;
-    var bar = Array(Math.floor(50 * pct / 100)).join('▩')+'▶'
-    while (bar.length < 50) bar += ' ';
-    let timer = chalk.cyan(frames[i = ++i % frames.length]);
-    let uploadTxt = '\nUploading';
-    if(pct.toFixed(1)>99){
-        timer='';
-        uploadTxt = '\nUploaded';
-    }
-    log(
-        `${chalk.green(uploadTxt+' ' + name)}
-[${chalk.green(bar)}${timer}] ${chalk.yellow(pct.toFixed(1))} % ( ${chalk.blue(speed)} /s)\n`
-      )
+var multiprog = require("./progressbar.util");
+var multi = new multiprog(process.stderr);
+var nameBarSet = [];
+function createBars(name,size){
+    var bar = multi.newBar(chalk.green(' uploading '+name)+'\t\t [:bar] :percent :etas', {
+        complete: chalk.cyan('█'),
+        incomplete: chalk.cyan('░'),
+        width: 30,
+        total: 100
+        });
+    var nameBar = {'name':name,'bar':bar};
+    nameBarSet.push(nameBar);
+}    
+function notifyMultipleProgress(name, progress) {
+    var pct = progress.percentage;
+    var nextTick = Math.floor(pct);
+    var nameBar = nameBarSet.find(nameBarItr=>nameBarItr.name===name);
+    nameBar.bar.update(nextTick/100);
 }
 
 function validateGHToken(ghToken) {

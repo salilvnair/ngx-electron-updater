@@ -35,13 +35,13 @@ module.exports = async (args, draft) => {
         let name,target, notes;
         
         if(args.name) {
-            name = name;
+            name = args.name;
         }
         if(args.target) {
-            name = name;
+            target = args.target;
         }
         if(args.notes) {
-            name = name;
+            notes = args.notes;
         }
         processPublish(name, tag, target, notes, files, draft,appName);
         
@@ -61,6 +61,7 @@ module.exports = async (args, draft) => {
             console.log(chalk.red('\nError:repository details not found please set one using command: ')+chalk.cyan('ngxeu init '+appName));
             process.exit();
         }
-        //ghRelease.uploadAsset(accessToken,repoDetails.user,repoDetails.repo,tag,files,draft);       
+        //create app-release.json and add it to the files array
+        files.push('./app-release.json');        
         ghRelease.uploadAsset(accessToken,repoDetails.user,repoDetails.repo,name,tag,target,notes,files,draft);
   }
