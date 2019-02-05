@@ -7,6 +7,12 @@ var shell = require('shelljs');
 module.exports = {
     getStoredGithubToken : (appName) => {
         return conf.get(appName+'.github.token');
+        
+    },
+    deleteStoredGithubToken : (appName) => {
+        if(conf.has(appName+'.github.token')){
+            conf.delete(appName+'.github.token')
+        }
     },
 
     generateNewToken : async (appName) => {
@@ -18,11 +24,20 @@ module.exports = {
             return input.token;
         }
     },
-
+    deleteStoredRepoDetails : (appName) => {
+        let user = conf.has(appName+'.github.user');
+        let repo = conf.has(appName+'.github.repo');
+        if(user){
+            conf.delete(appName+'.github.user')
+        }
+        if(repo){
+            conf.delete(appName+'.github.repo')
+        }
+    },
     getStoredRepoDetails : (appName) => {
         let user = conf.get(appName+'.github.user');
         let repo = conf.get(appName+'.github.repo');
-        if(repo && user){
+        if(repo && repo!='' && user && user!=''){
             return {user:user,repo:repo};
         }
         else{

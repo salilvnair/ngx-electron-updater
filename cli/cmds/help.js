@@ -22,7 +22,16 @@ const menus = {
     usage: ngxeu ${chalk.cyan('init')}${chalk.green(' <appName>')}  
 
     commands:
-        ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  prompts user to enter github token and repository details then saves it in config.`,
+        ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  prompts user to enter github token and repository details then saves it in config.
+    
+    options:
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear, -c')}\t\t\t deletes the existing access token and repo details if any.
+        
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-token, -ct')}\t\t deletes the existing access token if any.
+        
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-repodetails, -cr')}\t\t deletes the existing repo details if any..
+        
+        `,      
 
 //----------------------------------------------------------------//  
     build: `
@@ -49,7 +58,10 @@ const menus = {
     `,
 //----------------------------------------------------------------//  
     publish: `
-    usage: ngxeu ${chalk.cyan('publish')} <options>
+    usage: ngxeu ${chalk.cyan('publish')}${chalk.green(' <appName>')} <options>
+    commands:
+        ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  should be the one given while ${chalk.blue('ngxeu init AppName')}
+    
 
     options:
         ${chalk.green('[optional] ')}${chalk.cyan(' --draft')}\t\t\tupload assets as draft version ${chalk.green('(default)')} 
