@@ -22,7 +22,16 @@ const menus = {
     usage: ngxeu ${chalk.cyan('init')}${chalk.green(' <appName>')}  
 
     commands:
-        ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  prompts user to enter github token and repository details then saves it in config.`,
+        ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  prompts user to enter github token and repository details then saves it in config.
+    
+    options:
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear, -c')}\t\t\t deletes the existing access token and repo details if any.
+        
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-token, -ct')}\t\t deletes the existing access token if any.
+        
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-repodetails, -cr')}\t\t deletes the existing repo details if any..
+        
+        `,      
 
 //----------------------------------------------------------------//  
     build: `
@@ -49,13 +58,19 @@ const menus = {
     `,
 //----------------------------------------------------------------//  
     publish: `
-    usage: ngxeu ${chalk.cyan('publish')} <options>
+    usage: ngxeu ${chalk.cyan('publish')}${chalk.green(' <appName>')} <options>
+    commands:
+        ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  should be the one given while ${chalk.blue('ngxeu init AppName')}
+    
 
     options:
-        ${chalk.green('[optional] ')}${chalk.cyan(' --draft')}\t\t\t\t\tupload assets as draft version ${chalk.green('(default)')} 
-        ${chalk.green('[optional] ')}${chalk.cyan(' --release')}\t\t\t\t\tupload assets as release version   
-        ${chalk.red('[mandatory]')}${chalk.cyan(' --tag, -t ')}${chalk.yellow('<tagName>')}\t\t\t\trelease/draft tag version 
-        ${chalk.red('[mandatory]')}${chalk.cyan(' --file, -f ')}${chalk.yellow('<fileNameWithRelativePath>')}\tfile(s) to be uploaded`,
+        ${chalk.green('[optional] ')}${chalk.cyan(' --draft')}\t\t\tupload assets as draft version ${chalk.green('(default)')} 
+        ${chalk.green('[optional] ')}${chalk.cyan(' --release')}\t\t\tupload assets as release version   
+        ${chalk.green('[optional] ')}${chalk.cyan(' --name')}\t\t\trelease name (${chalk.green('if not given will be defaulted to ')}${chalk.red('tag name')})
+        ${chalk.green('[optional] ')}${chalk.cyan(' --target')}\t\t\tbranch name (${chalk.green('if not given will be defaulted to ')}${chalk.red('master')})
+        ${chalk.green('[optional] ')}${chalk.cyan(' --notes')}\t\t\tany notes (${chalk.green('if not given will be defaulted to ')}${chalk.red('empty')})  
+        ${chalk.red('[mandatory]')}${chalk.cyan(' --tag,  -t ')}\t\t\trelease/draft tag version 
+        ${chalk.red('[mandatory]')}${chalk.cyan(' --file, -f ')}\t\t\tfile(s) to be uploaded, should be the relative path of the files`,
 //----------------------------------------------------------------// 
     releases: `
     usage: ngxeu ${chalk.cyan('releases')}${chalk.green(' <appName>')}  <options>
@@ -65,16 +80,16 @@ const menus = {
     
     options:
         ${chalk.green('[optional] ')}${chalk.cyan(' --list, -l')}
-         shows a list of all releases, Only users with push access will receive listings for draft releases.
+         shows a list of all releases, only users with push access will receive listings for draft releases.
         
         ${chalk.green('[optional] ')}${chalk.cyan(' --latest --list, --latest -l')}
          shows a response of latest release.  
         
-        ${chalk.green('[optional] ')}${chalk.cyan(' --out, -o ')}${chalk.yellow('<fileNameWithRelativePath>')}
-         saves list of all releases to the given json file, Only users with push access will receive listings for draft releases.
+        ${chalk.green('[optional] ')}${chalk.cyan(' --out, -o ')}
+         saves list of all releases to the given json file(expects relative file path), \n\t only users with push access will receive listings for draft releases.
         
-        ${chalk.green('[optional] ')}${chalk.cyan(' --latest --out,  --latest -o ')}${chalk.yellow('<fileNameWithRelativePath>')}
-         saves the response of latest release to the given json file` 
+        ${chalk.green('[optional] ')}${chalk.cyan(' --latest --out,  --latest -o ')}
+         saves the response of latest release to the given json file(expects relative file path)` 
 //----------------------------------------------------------------//                
   }
   
@@ -83,7 +98,7 @@ const menus = {
     clear();
     console.log(
         chalk.red(
-          figlet.textSync('Ngx   Electron   Updater', { font:'Doom',verticalLayout: 'full' })
+          figlet.textSync('Ngx   Electron   Updater', { font:'Doom'})
         )
       );
     const subCmd = args._[0] === 'help'

@@ -1,4 +1,4 @@
-const github = require('../util/github');
+const github = require('../util/github-inquirer.util');
 const chalk = require('chalk');
 const ghRelease = require('../util/gh-release.util')
 module.exports = async (args, draft) => {
@@ -32,14 +32,25 @@ module.exports = async (args, draft) => {
         if(args.release) {
             draft = false;
         }
-        processPublish(tag, files, draft,appName);
+        let name,target, notes;
+        
+        if(args.name) {
+            name = args.name;
+        }
+        if(args.target) {
+            target = args.target;
+        }
+        if(args.notes) {
+            notes = args.notes;
+        }
+        processPublish(name, tag, target, notes, files, draft,appName);
         
     } catch (err) {
       console.error(err)
     }
   }
 
-  function processPublish(tag, files, draft,appName){
+  function processPublish(name, tag, target, notes, files, draft,appName){
         let accessToken = github.getStoredGithubToken(appName);        
         if(!accessToken) {
            console.log(chalk.red('\nError:access token not found please set one using command: ')+chalk.cyan('ngxeu init '+appName));
@@ -50,6 +61,7 @@ module.exports = async (args, draft) => {
             console.log(chalk.red('\nError:repository details not found please set one using command: ')+chalk.cyan('ngxeu init '+appName));
             process.exit();
         }
-        ghRelease.uploadAsset(accessToken,repoDetails.user,repoDetails.repo,tag,files,draft);       
-
+        //create app-release.json and add it to the files array
+        files.push('./app-release.json');        
+        ghRelease.uploadAsset(accessToken,repoDetails.user,repoDetails.repo,name,tag,target,notes,files,draft);
   }

@@ -1,4 +1,4 @@
-const github = require('../util/github');
+const github = require('../util/github-inquirer.util');
 const chalk = require('chalk');
 module.exports = async (args) => {
     try {
@@ -8,6 +8,24 @@ module.exports = async (args) => {
             process.exit();
         }
         let appName = args._[1];
+        if(args.clear||args.c){
+            github.deleteStoredGithubToken(appName);
+            github.deleteStoredRepoDetails(appName);
+            console.log(chalk.green('cleared access token and repo details!'));
+            process.exit();
+        }
+        if(args['clear-token']||args.ct){
+            github.deleteStoredGithubToken(appName);
+            github.deleteStoredRepoDetails(appName);
+            console.log(chalk.green('cleared access token details!'));
+            process.exit();
+        }
+        if(args['clear-repodetails']||args.cr){
+            github.deleteStoredGithubToken(appName);
+            github.deleteStoredRepoDetails(appName);
+            console.log(chalk.green('cleared repo details!'));
+            process.exit();
+        }
         await getGitHubAccessToken(appName);
         await getGitHubRepositoryDetails(appName);
 
@@ -18,7 +36,7 @@ module.exports = async (args) => {
   let getGitHubAccessToken = async(appName) =>{
     // Check if access token for ginit was registered
     let accessToken = github.getStoredGithubToken(appName);
-    if(!accessToken) {
+    if(!accessToken && accessToken!='') {
         console.log(chalk.red('No access token has been found please set one!'));
         // ask user to generate a new token
         accessToken = await github.generateNewToken(appName);

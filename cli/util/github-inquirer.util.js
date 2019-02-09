@@ -1,4 +1,4 @@
-const inquirer = require('./inquirer');
+const inquirer = require('./inquirer.util');
 const pkg = require('../package.json');
 const Configstore = require('configstore');
 const conf = new Configstore(pkg.name);
@@ -7,6 +7,12 @@ var shell = require('shelljs');
 module.exports = {
     getStoredGithubToken : (appName) => {
         return conf.get(appName+'.github.token');
+        
+    },
+    deleteStoredGithubToken : (appName) => {
+        if(conf.has(appName+'.github.token')){
+            conf.delete(appName+'.github.token')
+        }
     },
 
     generateNewToken : async (appName) => {
@@ -18,11 +24,20 @@ module.exports = {
             return input.token;
         }
     },
-
+    deleteStoredRepoDetails : (appName) => {
+        let user = conf.has(appName+'.github.user');
+        let repo = conf.has(appName+'.github.repo');
+        if(user){
+            conf.delete(appName+'.github.user')
+        }
+        if(repo){
+            conf.delete(appName+'.github.repo')
+        }
+    },
     getStoredRepoDetails : (appName) => {
         let user = conf.get(appName+'.github.user');
         let repo = conf.get(appName+'.github.repo');
-        if(repo && user){
+        if(repo && repo!='' && user && user!=''){
             return {user:user,repo:repo};
         }
         else{
@@ -39,10 +54,10 @@ module.exports = {
         }
     },
 
-    uploadReleaseAsset: (token) => { 
-        var releaseAssetCmd = "sh ./util/gh-release.util.sh gh_token="+token+" owner=salilvnair repo=vdemy tag=v0.0.3 filename=./test.txt"
-        console.log(releaseAssetCmd);
-        console.log(shell.exec(releaseAssetCmd)); 
-    }
+    // uploadReleaseAsset: (token) => { 
+    //     var releaseAssetCmd = "sh ./util/gh-release.util.sh gh_token="+token+" owner=salilvnair repo=vdemy tag=v0.0.3 filename=./test.txt"
+    //     console.log(releaseAssetCmd);
+    //     console.log(shell.exec(releaseAssetCmd)); 
+    // }
 
 };
