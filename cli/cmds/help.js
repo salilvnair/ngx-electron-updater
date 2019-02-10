@@ -69,6 +69,9 @@ const menus = {
         ${chalk.green('[optional] ')}${chalk.cyan(' --name')}\t\t\trelease name (${chalk.green('if not given will be defaulted to ')}${chalk.red('tag name')})
         ${chalk.green('[optional] ')}${chalk.cyan(' --target')}\t\t\tbranch name (${chalk.green('if not given will be defaulted to ')}${chalk.red('master')})
         ${chalk.green('[optional] ')}${chalk.cyan(' --notes')}\t\t\tany notes (${chalk.green('if not given will be defaulted to ')}${chalk.red('empty')})  
+        ${chalk.green('[optional] ')}${chalk.cyan(' --delete, -d, -D')}\t\tdelete a draft,release or a tag by tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.green('--tags=v1.0.0,v1.0.1')}
+        ${chalk.green('[optional] ')}${chalk.cyan(' --tags, --tgs')}\t\tdelete draft or release functionality uses this option to determine the tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --tags=v1.0.0,v1.0.1')}
+        ${chalk.green('[optional] ')}${chalk.cyan(' --emptyTags, --etgs')}\t\tdelete tag functionality uses this option to determine the empty tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --emptyTags=v1.0.0,v1.0.1')}
         ${chalk.red('[mandatory]')}${chalk.cyan(' --tag,  -t ')}\t\t\trelease/draft tag version 
         ${chalk.red('[mandatory]')}${chalk.cyan(' --file, -f ')}\t\t\tfile(s) to be uploaded, should be the relative path of the files`,
 //----------------------------------------------------------------// 

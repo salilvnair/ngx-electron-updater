@@ -5,7 +5,10 @@ var progress = require('progress-stream')
 var util = require('util')
 var fs = require('fs')
 var path = require('path')
+var pkg = require('../package.json')
 var EventEmitter = require('events').EventEmitter
+var rp = require('request-promise');
+const chalk = require('chalk');
 
 var GITHUB_API_ROOT = 'https://api.github.com'
 
@@ -13,8 +16,6 @@ function GithubPublishUtil (opts, cb) {
     if (!(this instanceof GithubPublishUtil)) return new GithubPublishUtil(opts, cb)
     this.opts = (opts || {})
     this.cb = (cb || function noop () {})
-  
-    this.publish()
 }
 
 util.inherits(GithubPublishUtil, EventEmitter);
@@ -57,7 +58,7 @@ GithubPublishUtil.prototype.publish = function publish () {
                         },
                         headers: {
                         'Authorization': 'token ' + opts.token,
-                        'user-agent': 'ngxeu'              
+                        'user-agent': 'ngxeu ' + pkg.version             
                         }
                     }
                     request(reqDetails, function (err, res, body) {
@@ -81,7 +82,7 @@ GithubPublishUtil.prototype.publish = function publish () {
                         json: true,
                         headers: {
                         'Authorization': 'token ' + opts.token,
-                        'user-agent': 'ngxeu'
+                        'user-agent': 'ngxeu ' + pkg.version  
                         }
                     }, function (err, res, body) {
                         if (err) return callback(err)
@@ -137,7 +138,7 @@ GithubPublishUtil.prototype.publish = function publish () {
                 'Authorization': 'token ' + opts.token,
                 'Content-Type': mime.lookup(fileName) || 'application/octet-stream',
                 'Content-Length': stat.size,
-                'user-agent': 'ngxeu'
+                'user-agent': 'ngxeu ' + pkg.version  
               }
             }, function (err, res, body) {
               if (err) return callback(err)
@@ -179,6 +180,47 @@ GithubPublishUtil.prototype.publish = function publish () {
                 cb(null, results.createRelease)
         }
     )
+}
+
+GithubPublishUtil.prototype.deleteReleaseOrTag = async function deleteReleaseOrTag(id,opts){
+    var deleteTagUri;
+    var self = this;
+    if(opts.emptyTags){
+        deleteTagUri = util.format((opts.apiUrl || GITHUB_API_ROOT) + '/repos/%s/%s/git/refs/tags/%s', opts.owner, opts.repo, id)
+    }
+    else{
+        deleteTagUri = util.format((opts.apiUrl || GITHUB_API_ROOT) + '/repos/%s/%s/releases/%s', opts.owner, opts.repo, id);
+    }
+    const requestOptions  = {
+        method:'DELETE',
+        uri:deleteTagUri,
+        headers: {
+        'Authorization': 'token ' + opts.token,
+        'user-agent': 'ngxeu ' + pkg.version  
+        },
+        json: true ,
+        resolveWithFullResponse: true 
+        
+    }     
+    await rp(requestOptions)
+        .then(function (response) {
+            self.emit('tag-deleted',opts.tag,response);
+            let targetInfo = '';
+            let targetInfoPrefix = ''
+            if(opts.target){
+                targetInfoPrefix = ' from';
+                targetInfo = ' '+opts.target;
+            }
+            let tag = opts.tag;
+            if(!opts.tag){
+                tag = id;
+            }
+            console.log(chalk.green("\nSuccess(")+chalk.cyan(response.statusCode)+chalk.green("): Tag ")+chalk.cyan(tag)+chalk.green(' deleted'+targetInfoPrefix)+chalk.cyan(targetInfo)+chalk.green(" successfully!!"));
+        })
+        .catch(function (err) {
+            self.emit('tag-delete-error',opts.tag,err);
+            console.log(chalk.red('\nError('+chalk.cyan(err.statusCode)+'): ')+chalk.red(err.error.message+' for tag ')+chalk.cyan(id));
+        });
 }
   
 module.exports = GithubPublishUtil
