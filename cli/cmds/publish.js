@@ -12,9 +12,20 @@ module.exports = async (args, draft) => {
         let appName = args._[1];
         //console.log(args)
         if(args.d||args.delete||args.D){
+           let releases = await getAllReleases(appName);
            if(args.t||args.tag) {
-            tag = args.t || args.tag;
-            await processDeletePublishedVersion(appName,tag,args);
+            tag = args.t || args.tag;            
+            await processDeletePublishedVersion(appName,tag,args,releases);
+            process.exit();
+           }
+           else if(args.tgs||args.tags){
+            let tagsArgs = args.tgs || args.tags;
+            var tags = [];
+            tags = tagsArgs.split(",");
+            for(i=0;i<tags.length;i++){
+                let tag = tags[i];
+                await processDeletePublishedVersion(appName,tag,args,releases);
+            }
             process.exit();
            } 
            else if(args.emptyTags||args.etgs){
@@ -82,7 +93,21 @@ module.exports = async (args, draft) => {
         ghRelease.uploadAsset(accessToken,repoDetails.user,repoDetails.repo,name,tag,target,notes,files,draft);
   }
 
-  async function processDeletePublishedVersion(appName,tag,args){
+  async function getAllReleases(appName) {
+    let accessToken = github.getStoredGithubToken(appName);       
+    if(!accessToken) {
+       console.log(chalk.red('\nError:access token not found please set one using command: ')+chalk.cyan('ngxeu init '+appName));
+       process.exit();
+    }
+    let repoDetails = github.getStoredRepoDetails(appName);
+    if(!repoDetails){
+        console.log(chalk.red('\nError:repository details not found please set one using command: ')+chalk.cyan('ngxeu init '+appName));
+        process.exit();
+    }
+    return ghRelease.listRelease(accessToken,repoDetails.user,repoDetails.repo,"all")
+  }
+
+  async function processDeletePublishedVersion(appName,tag,args,releases){
     let accessToken = github.getStoredGithubToken(appName);       
     if(!accessToken) {
        console.log(chalk.red('\nError:access token not found please set one using command: ')+chalk.cyan('ngxeu init '+appName));
@@ -94,13 +119,12 @@ module.exports = async (args, draft) => {
         process.exit();
     }
     listCmd="all";
-    let releases = await ghRelease.listRelease(accessToken,repoDetails.user,repoDetails.repo,listCmd);
-    let hasTag = validateReleasesByTag(releases,tag);
+    let hasTag = validateReleasesByTag(releases,tag,args);
     if(hasTag){
         if(hasMultipleEntriesForTag(releases,tag)){
             if(args.D){
-                let releaseIds = getReleaseIds(releases,tag);
-                await ghRelease.deleteReleaseByTag(accessToken,repoDetails.user,repoDetails.repo,tag,releaseIds,null)
+                let releaseIds = getReleaseIds(releases,tag,args);
+                await ghRelease.deleteReleaseByTag(accessToken,repoDetails.user,repoDetails.repo,tag,releaseIds,null,args.target)
             }
             else{
                 console.log(chalk.red('\nError:Multiple entries with tag name ')+chalk.cyan(tag)+' found.Please use '+chalk.cyan('-D')+' to force delete all. eg:'+chalk.cyan('ngxeu publish MyApp -D -t v1.0.0'));
@@ -108,13 +132,18 @@ module.exports = async (args, draft) => {
             }
         }
         else{
-            let releaseIds = getReleaseIds(releases,tag);
-            await ghRelease.deleteReleaseByTag(accessToken,repoDetails.user,repoDetails.repo,tag,releaseIds,null)
+            let releaseIds = getReleaseIds(releases,tag,args);
+            await ghRelease.deleteReleaseByTag(accessToken,repoDetails.user,repoDetails.repo,tag,releaseIds,null,args.target)
         }  
     }
     else{
-        console.log(chalk.red('\nError('+chalk.cyan('404')+'): No tag name with ')+chalk.cyan(tag)+chalk.red(' found.'));
-        process.exit();
+        let targetInfo = '';
+        let targetInfoPrefix = ''
+        if(args.target){
+            targetInfoPrefix = 'on';
+            targetInfo = args.target;
+        }
+        console.log(chalk.red('\nError('+chalk.cyan('404')+'): No tag name with ')+chalk.cyan(tag)+chalk.red(' found '+targetInfoPrefix)+chalk.cyan(' '+targetInfo));
     }
   }
 
@@ -133,26 +162,40 @@ module.exports = async (args, draft) => {
         process.exit();
     }
     listCmd="all";
-    await ghRelease.deleteReleaseByTag(accessToken,repoDetails.user,repoDetails.repo,null,null,emptyTags);
+    await ghRelease.deleteReleaseByTag(accessToken,repoDetails.user,repoDetails.repo,null,null,emptyTags,null);
     process.exit();
   }
 
-  function validateReleasesByTag(releases,tag) {
+  function validateReleasesByTag(releases,tag,args) {
       let hasTag = false;
       releases.forEach(element => {
-          if(element.tag_name===tag){
-            hasTag = true;
+          if(args.target){
+            if(element.tag_name===tag && element.target_commitish===args.target){
+                hasTag = true;
+              }
+          }
+          else{
+            if(element.tag_name===tag){
+                hasTag = true;
+              }
           }
       });
       return hasTag;
   }
 
-  function getReleaseIds(releases,tag){
+  function getReleaseIds(releases,tag,args){
     let releaseIds = [];
     releases.forEach(element => {
-        if(element.tag_name===tag){
-            releaseIds.push(element.id);
-        }
+        if(args.target){
+            if(element.tag_name===tag && element.target_commitish===args.target){
+                releaseIds.push(element.id);
+              }
+          }
+          else{
+            if(element.tag_name===tag){
+                releaseIds.push(element.id);
+              }
+          }
     });
     return releaseIds;
   }
