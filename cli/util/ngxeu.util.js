@@ -1,11 +1,11 @@
 const fs = require('fs');
-const ngxeuignore = input => {
+const ngxeuinclude = input => {
     return input.toString()
       .split(/\r?\n/)
       .filter(l => l.trim() !== '' && l.charAt(0) !== '#');
   };
   
-  ngxeuignore.parse = (path, fn = line => line) => {
+  ngxeuinclude.parse = (path, fn = line => line) => {
     if(!fs.existsSync(path)){
         return null;
     }  

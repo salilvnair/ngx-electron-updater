@@ -1,19 +1,23 @@
 const chalk = require('chalk');
-const clear       = require('clear');
-const figlet      = require('figlet');
+const clear = require('clear');
+const figlet = require('figlet');
+var pkg = require('../package.json')
 const menus = {
 
     default: `
-    usage: ngxeu <command>
+    usage: ngxeu ${chalk.cyan('<command>')}
 
     commands:
+    
         ${chalk.cyan('init')}\t\tinitializes github release related meta data
+
+        ${chalk.cyan('fuse')}\t\tCreates a fusion between angular and electron app.  
 
         ${chalk.cyan('build')}\t\tbuilds the electron app into windows/mac distributables.        
 
         ${chalk.cyan('publish')}\t\tpublishes the assests using the github release API v3
 
-        ${chalk.cyan('releases')}\tshows the list of releases for an app        
+        ${chalk.cyan('show')}\t\tshows the list of releases for an app        
         
     for more help run ${chalk.cyan('ngxeu <command> -h')}  to get quick help on <command>
         `,
@@ -27,7 +31,7 @@ const menus = {
     options:
         ${chalk.green('[optional] ')}${chalk.cyan('  --clear, -c')}\t\t\t deletes the existing access token and repo details if any.
         
-        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-token, -ct')}\t\t deletes the existing access token if any.
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-token, -ct')}\t\t\t deletes the existing access token if any.
         
         ${chalk.green('[optional] ')}${chalk.cyan('  --clear-repodetails, -cr')}\t\t deletes the existing repo details if any..
         
@@ -45,9 +49,12 @@ const menus = {
         
         ${chalk.green('[optional] ')}${chalk.cyan(' --win -w')}
         package the app using electron-builder as windows distributable.  
-
+        
         ${chalk.green('[optional] ')}${chalk.cyan(' --default')}
         package the app using electron-builder default package json config\n\tfor default config info run ${chalk.blue('ngxeu build MyApp --show-default')}  
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --no-default')}
+        package the app using electron-builder user defined electron builder config.  
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --show-default')}
         shows the default package json config. 
@@ -57,6 +64,15 @@ const menus = {
     usage: ngxeu ${chalk.cyan('config')} <options>
     `,
 //----------------------------------------------------------------//  
+
+//----------------------------------------------------------------// 
+    fuse:`
+    usage: ngxeu ${chalk.cyan('fuse')}${chalk.green(' <appName>')} <options>
+    
+    options:
+    ${chalk.green('[optional] ')}${chalk.cyan(' --skip-ng')}\tskip angular option can be used on an existing angular app.     
+    `,
+//----------------------------------------------------------------// 
     publish: `
     usage: ngxeu ${chalk.cyan('publish')}${chalk.green(' <appName>')} <options>
     commands:
@@ -75,8 +91,8 @@ const menus = {
         ${chalk.red('[mandatory]')}${chalk.cyan(' --tag,  -t ')}\t\t\trelease/draft tag version 
         ${chalk.red('[mandatory]')}${chalk.cyan(' --file, -f ')}\t\t\tfile(s) to be uploaded, should be the relative path of the files`,
 //----------------------------------------------------------------// 
-    releases: `
-    usage: ngxeu ${chalk.cyan('releases')}${chalk.green(' <appName>')}  <options>
+    show: `
+    usage: ngxeu ${chalk.cyan('show')}${chalk.green(' <appName>')}  <options>
     
     commands:
         ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  should be the one given while ${chalk.blue('ngxeu init AppName')}
@@ -100,9 +116,10 @@ const menus = {
   module.exports = (args) => {
     clear();
     console.log(
-        chalk.red(
-          figlet.textSync('Ngx   Electron   Updater', { font:'Doom'})
-        )
+        `${chalk.red(figlet.textSync('Ngx   Electron   Updater', { font:'Doom'}))}
+CLI version : ${pkg.version}
+Node version: ${process.version}
+        `
       );
     const subCmd = args._[0] === 'help'
       ? args._[1]

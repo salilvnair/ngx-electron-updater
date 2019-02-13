@@ -1,7 +1,15 @@
-import { GitHubReleaseUrl } from "projects/ngx-electron-updater/src/lib/decorator/gh-releaseurl.decorator";
 import { DownloadPathSuffix } from "projects/ngx-electron-updater/src/lib/decorator/download-path-suffix.decorator";
+import { Release } from "projects/ngx-electron-updater/src/lib/decorator/release.decorator";
+import { Provider } from "projects/ngx-electron-updater/src/lib/type/provider.enum";
 
 export class AppUpdaterConfig {
-    @GitHubReleaseUrl("https://github.com/salilvnair/vdemy/releases/download/v0.0.3/Vdemy-0.0.3-win.zip") gitReleaseUrl:string;
-    @DownloadPathSuffix("vdemy-updater/pending/") downloadPrefix:string;
+    @Release({
+        user:"salilvnair",
+        repo:"vdemy",
+        provider:Provider.github
+    }) 
+    gitReleaseUrl:string;
+    @DownloadPathSuffix("vdemy-updater/pending/") 
+    downloadPrefix:string;
+
 }

@@ -36,20 +36,24 @@
         require('./cmds/publish')(args,false)
       break     
 
-      case 'releases':
-      require('./cmds/releases')(args)
+      case 'show':
+      require('./cmds/show')(args)
       break  
 
       case 'build':
       require('./cmds/build')(args)
       break 
 
+      case 'fuse':
+      require('./cmds/fuse')(args)
+      break
+
       case 'test':
       require('./cmds/test')(args)
       break 
 
       default:
-         console.error(`"${cmd}" is not a valid command!`)
+         console.error(`${chalk.red(chalk.cyan("\""+cmd+"\"")+" is not a valid command!")}`)
       break
   }
  }

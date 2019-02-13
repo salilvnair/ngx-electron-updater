@@ -4,7 +4,7 @@ const shellJs = require('shelljs');
 const { ngxeu_scripts } = require('../package.json')
 const jsonfile = require('jsonfile');
 const fs = require('fs');
-let ngxeu_include = require('./ngxeu.util');
+let ngxeuinclude = require('./ngxeu.util');
 require('./date.util');
 
 module.exports =  {
@@ -24,9 +24,9 @@ module.exports =  {
         let currentVersion = packageJson.version;
         let releaseDate = new Date().format("dd/mm/yyyy");
         let releaseInfo = {
-            "name" : appName,
-            "version": currentVersion,
-            "released_at":releaseDate
+            "name" : appName+"",
+            "version": currentVersion+"",
+            "released_at":releaseDate+""
         }
         jsonfile.writeFileSync('./app-release.json',releaseInfo,{spaces: 2, EOL: '\r\n'});  
     },
@@ -65,7 +65,7 @@ module.exports =  {
     },
     modifyPackageJson: (args, appName, electronBuildCmd) =>{
         let packageJson = jsonfile.readFileSync('./package.json');
-        if(args.default || !packageJson.build){
+        if(!args['no-default']){
             let includeData = ngxeuIncludeData();
             let finalFilesArray = ["**/*"]
             if(includeData){
@@ -99,7 +99,7 @@ module.exports =  {
             scripts["ngxeu-build"] = electronBuildCmd;
             packageJson.scripts = scripts;
         }
-        console.log(packageJson);
+        //console.log(packageJson);
         jsonfile.writeFileSync('./package.json',packageJson,{spaces: 2, EOL: '\r\n'});
     },
 
@@ -171,8 +171,8 @@ function buildElectronApp(appName) {
 }
 
 function ngxeuIncludeData(){
-    if(ngxeu_include.parse('./.ngxeuinclude')){
-        return ngxeu_include.parse('./.ngxeuinclude').patterns;
+    if(ngxeuinclude.parse('./.ngxeuinclude')){
+        return ngxeuinclude.parse('./.ngxeuinclude').patterns;
     }
     else{
         return null;

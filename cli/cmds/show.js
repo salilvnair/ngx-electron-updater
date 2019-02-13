@@ -30,11 +30,13 @@ module.exports = async (args) => {
     }
     else if((args.latest) && (args.l || args.list)) {
         let listCmd = "latest";
-        console.log(await getReleaseList(appName, listCmd));
+        let latestReleaseResponse = await getReleaseList(appName, listCmd);
+        console.log(chalk.cyan(JSON.stringify(latestReleaseResponse, null, 2)));
     }
     else if((args.l || args.list)) {
         let listCmd = "all";
-        console.log(await getReleaseList(appName, listCmd));
+        let latestReleaseResponse = await getReleaseList(appName, listCmd);
+        console.log(chalk.cyan(JSON.stringify(latestReleaseResponse, null, 2)));
     }
     else{
         require('./help')(args);

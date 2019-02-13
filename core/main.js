@@ -1,8 +1,11 @@
 const { app,dialog, BrowserWindow, Menu, ipcMain } = require("electron");
 let os = require("os");
+
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1";
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let browserWindow;
+
 
 ipcMain.on("update-check", function(event, text) {
   console.log(text);
@@ -13,6 +16,10 @@ function sendStatusToWindow(text) {
   log.info(text);
   browserWindow.webContents.send(text);
 }
+
+
+
+
 
 
 function createWindow() {
@@ -124,6 +131,7 @@ function createWindow() {
   ];
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  //testHere();
 }
 
 // This method will be called when Electron has finished

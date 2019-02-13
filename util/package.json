@@ -1,0 +1,24 @@
+{
+  "name": "@ngxeu/util",
+  "version": "4.0.0",
+  "description": "portable angular electron fused app update installer",
+  "main": "ngxei.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "keywords": [
+    "ngxei",
+    "ngxeu",
+    "ngx-electron-updater",
+    "ngx-electron-installer",
+    "ngx-electron"
+  ],
+  "dependencies": {
+    "unzipper": "^0.9.10"
+  },
+  "author": "Salil V Nair",
+  "license": "MIT"
+}
