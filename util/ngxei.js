@@ -2,7 +2,8 @@ let fs = require('fs');
 let path = require('path');
 let unzipper = require('unzipper');
 var util = require('util');
-var EventEmitter = require('events').EventEmitter
+var EventEmitter = require('events').EventEmitter;
+var path = require('path');
 
 function NgxElectronInstaller () {
     if (!(this instanceof NgxElectronInstaller)) return new NgxElectronInstaller()
@@ -19,8 +20,7 @@ NgxElectronInstaller.prototype.extract = function() {
 }
 NgxElectronInstaller.prototype.archiveInfo = function() {
   let ZIP_FILE_PATH = this.opts.zip_file_path;
-  const directory = await unzipper.Open.file(ZIP_FILE_PATH);
-  this.emit('directory', directory);
+  return unzipper.Open.file(ZIP_FILE_PATH);
 }
 
 function _extract(options,installer){
@@ -32,15 +32,19 @@ function _extract(options,installer){
     if(options.os==='win'){
       resourcePath = 'resources/app/';
     }
+    else if(options.os==='mac'){
+      resourcePath = 'Contents/Resources/app/';
+    }
     let entryCounter = 0;
     fs.createReadStream(ZIP_FILE_PATH)
             .pipe(unzipper.Parse())
             .on("entry", (entry) =>{
+              entryCounter++;
+              installer.emit('entryCounter',entryCounter);
               var fileName = entry.path;
               var type = entry.type; // 'Directory' or 'File'
-              var totalSize = entry.size;
               if (fileName.indexOf(resourcePath+"build/") > -1) {
-                fileName = fileName.replace(resourcePath, "");
+                fileName = path.basename(fileName);
                 if (type == "Directory") {
                   forceCreateDir(extractPath + '/' + fileName);
                 } else if (type == "File") {
@@ -50,22 +54,21 @@ function _extract(options,installer){
               } else {
                 entry.autodrain();
               }
-              entryCounter++;
             })
   }
 
 function forceCreateDir(dir) {
-    if (fs.existsSync(dir)) {
-      return;
-    }
-    try {
-      fs.mkdirSync(dir);
-    } catch (err) {
-      if (err.code==="ENOENT") {
-        forceCreateDir(path.dirname(dir)); //create parent dir
-        forceCreateDir(dir); //create dir
-      }
+  if (fs.existsSync(dir)) {
+    return;
+  }
+  try {
+    fs.mkdirSync(dir);
+  } catch (err) {
+    if (err.code==="ENOENT") {
+      forceCreateDir(path.dirname(dir)); //create parent dir
+      forceCreateDir(dir); //create dir
     }
   }
+}
 
 module.exports = NgxElectronInstaller()

@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { ElectronService } from "ngx-electron";
 import { ElectronAppUtil } from "../../electron-app.util";
 import { NgxElectronInstaller } from "../@types/ngx-electron-installer.util";
+import { NgxeiOption } from "../@types/ngxei-model";
 
 
 @Injectable()
@@ -11,18 +12,17 @@ export class NgxElectronInstallerUtil {
                 private _electronAppUtil:ElectronAppUtil){}
 
     extract() {
-         let ngxei:NgxElectronInstaller = this._electronService.remote.require('@ngxeu/util');
-        // let options:NgxeiOption = new NgxeiOption();
-        // options.app_dir=this._electronAppUtil.appPath();
-        // options.extract_path=this._electronAppUtil.appPath()+'/update';
-        // options.zip_file_path = 'C:/Users/SalilNair/AppData/Local/vdemy-updater/pending/Vdemy-3.0.4-win.zip'
-        // options.os='win';
-        // ngxei.setOptions(options);
-        // ngxei.extract()
-        ngxei.on('hello',(val)=>{
+        let ngxei:NgxElectronInstaller = this._electronService.remote.require('@ngxeu/util');
+         let options:NgxeiOption = <NgxeiOption>{};
+         options.app_dir=this._electronAppUtil.appPath();
+         options.extract_path=this._electronAppUtil.appPath()+'/update';
+         options.zip_file_path = 'C:/Users/SalilNair/AppData/Local/vdemy-updater/pending/Vdemy-3.0.4-win.zip'
+         options.os='win';
+         ngxei.setOptions(options);
+        // ngxei.extract();
+        ngxei.archiveInfo().then(val=>{
             console.log(val);
-        });
-        ngxei.testEvent();
+        })
         console.log(ngxei);
     }
 

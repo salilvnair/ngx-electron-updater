@@ -8,4 +8,5 @@ export class DownloadStatus {
 export class DownloadNotifier {
     key:string;
     value:DownloadStatus;
+    path?:string;
 }

@@ -7,7 +7,7 @@ module.exports = {
     listRelease: async(ghToken,owner, repo, listCmd) => {
         try {
             validateGHToken(ghToken);
-            console.log(`${chalk.green('listing '+listCmd+' releases where')}: owner=${chalk.cyan(owner)}, repo=${chalk.cyan(repo)}`);
+            console.log(`${chalk.green('\nlisting '+listCmd+' releases where')}: owner=${chalk.cyan(owner)}, repo=${chalk.cyan(repo)}`);
             if(listCmd==='latest') {
                 const res = await octokit.repos.getLatestRelease({
                     owner: owner,
@@ -43,12 +43,12 @@ module.exports = {
             files.forEach(element => {
                 newLineToken = newLineToken+"\n";
             });
-            console.log(newLineToken+'Successfully published at: ' + release.html_url)
+            console.log(newLineToken+'Successfully published at: ' + chalk.cyan(release.html_url))
             process.exit(0);
         });
         githubPublishUtil.publish();
-        githubPublishUtil.on('asset-info', function (name,size) {
-            createBars(name,size);
+        githubPublishUtil.on('asset-info', function (name,barSpace,size) {
+            createBars(name,barSpace,size);
         });
         githubPublishUtil.on('upload-progress', (name, progress)=>{            
             notifyMultipleProgress(name, progress);
@@ -85,17 +85,12 @@ module.exports = {
 var multiprog = require("./progressbar.util");
 var multi = new multiprog(process.stderr);
 var nameBarSet = [];
-function createBars(name,size){
-    let space = '';
-    if(name.length<15){
-        space ='        ';
-    }
-    else{
-        space ='   ';
-    }
+function createBars(name,barSpace,size){
+    let space = " ";
+    space = space.repeat(barSpace+5);
     var bar = multi.newBar(chalk.green(' uploading '+name+space)+' [:bar] :percent :etas', {
-        complete: chalk.cyan('█'),
-        incomplete: chalk.cyan('░'),
+        complete: chalk.cyan('░'),
+        incomplete: chalk.cyan('.'),
         width: 30,
         total: 100
         });

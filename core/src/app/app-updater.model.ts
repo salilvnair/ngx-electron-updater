@@ -1,15 +1,17 @@
-import { DownloadPathSuffix } from "projects/ngx-electron-updater/src/lib/decorator/download-path-suffix.decorator";
-import { Release } from "projects/ngx-electron-updater/src/lib/decorator/release.decorator";
+import { DownloadInfo } from "projects/ngx-electron-updater/src/lib/decorator/download-info.decorator";
+import { ReleaseInfo } from "projects/ngx-electron-updater/src/lib/decorator/release-info.decorator";
 import { Provider } from "projects/ngx-electron-updater/src/lib/type/provider.enum";
 
 export class AppUpdaterConfig {
-    @Release({
+    @ReleaseInfo({
         user:"salilvnair",
         repo:"vdemy",
         provider:Provider.github
     }) 
     gitReleaseUrl:string;
-    @DownloadPathSuffix("vdemy-updater/pending/") 
-    downloadPrefix:string;
+    @DownloadInfo({
+        suffix:"vdemy-updater/pending/"
+    }) 
+    downloadSuffix:string;
 
 }

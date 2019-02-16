@@ -6,14 +6,27 @@ module.exports = async (args) => {
         process.exit();
     }
     let appName = args._[1];
-    
-    if(!await processCreateNgElectronFusion(args, appName)){
-        require('./help')(args);
-        process.exit();
+    if(args["inject-build-config"]||args.ibc){
+        if(!processInjectingNgxeuInPackageJson(args, appName)){
+            require('./help')(args);
+            process.exit();
+        }
+    }
+    else{
+        if(!await processCreateNgElectronFusion(args, appName)){
+            require('./help')(args);
+            process.exit();
+        }
     }
 }
 
-  async function processCreateNgElectronFusion(args, appName) {    
-    await fuseUtil.createAngularElectronApp(args,appName);
+async function processCreateNgElectronFusion(args, appName) {    
+   await fuseUtil.createAngularElectronApp(args,appName);
+   return true;
+}
+
+function processInjectingNgxeuInPackageJson(args, appName) {    
+    fuseUtil.injectingNgxeuInPackageJson(args,appName);
     return true;
 }
+

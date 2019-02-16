@@ -16,7 +16,19 @@ module.exports =  {
         );
         await processCreatingNgElectronFusion(args,appName);
     },
+    injectingNgxeuInPackageJson: (args,appName) =>{
+        clear();
+        console.log(
+            chalk.green(figlet.textSync('Ngxeu Injection', { font:'Doom'}))
+        );
+        processInjectingNgxeuInPackageJson(args,appName);
+    },
+}
 
+async function processInjectingNgxeuInPackageJson(args,appName) {
+    let appRootDir = shellJs.pwd()+"";
+    setInfoInPackageJson(args,appRootDir);
+    console.log(chalk.magenta('\n\nNgxeu Build Config Injection completed!!'));
 }
 
 async function processCreatingNgElectronFusion(args,appName) {
@@ -41,9 +53,12 @@ async function processCreatingNgElectronFusion(args,appName) {
    
     let appRootDir = shellJs.pwd()+"";
     copyDefaultMainTemplateIntoRootDir(appRootDir);
-    setInfoInPackageJson(appRootDir);
+    setInfoInPackageJson(args,appRootDir);
     let installElectronCmd = "npm install electron --save-dev";
     shellJs.exec(installElectronCmd);
+
+    let installElectronBuilderCmd = "npm install electron-builder --save-dev";
+    shellJs.exec(installElectronBuilderCmd);
     console.log(chalk.red(figlet.textSync('Fused',{font:'Fire Font-k'})));
     let postFusionAnswer = await promptInstallingNgxElectron(appName);
     if(postFusionAnswer){
@@ -55,11 +70,43 @@ async function processCreatingNgElectronFusion(args,appName) {
     }
 }
 
-function setInfoInPackageJson(rootDir) {
+function setInfoInPackageJson(args,rootDir) {
     let packageJsonPath = path.join(rootDir,"package.json");
     let packageJson = jsonfile.readFileSync(packageJsonPath);
     packageJson.main = "main.js";
+    let existingDevDependencies = packageJson.devDependencies;
+    let electronDevDependencies = {};
+    if(existingDevDependencies["electron"]){
+        electronDevDependencies["electron"] = existingDevDependencies["electron"]+"";
+    }
+    else{
+        electronDevDependencies["electron"] ="^4.0.1";
+    }
+    if(existingDevDependencies["electron-builder"]){
+        electronDevDependencies["electron-builder"] = existingDevDependencies["electron-builder"]+"";
+    }
+    else{
+        electronDevDependencies["electron-builder"] =  "^20.38.2";
+    }
     packageJson.scripts["electron"] = "./node_modules/.bin/electron .";
+    let ngxeu = {
+        app:{
+            dependencies:{
+                "nedb": "^1.8.0"
+            },
+            devDependencies: existingDevDependencies,
+            rootPath:"../ngxeu/electron"
+        },
+        "app-build":{
+            outputPath:"../ngxeu/electron/build",
+            packPath:"../ngxeu/electron/dist"
+        },
+        "ng-build":{
+            outputPath:"../ngxeu/angular/build",
+            packPath:"../ngxeu/angular/dist"
+        }
+    }
+    packageJson.ngxeu = ngxeu;
     jsonfile.writeFileSync(packageJsonPath,packageJson,{spaces: 2, EOL: '\r\n'});
 }
 

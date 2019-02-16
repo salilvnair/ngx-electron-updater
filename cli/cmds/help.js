@@ -43,18 +43,21 @@ const menus = {
     commands:
         ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  should be the one given while ${chalk.blue('ngxeu init AppName')}
     
-    options:
-        ${chalk.green('[optional] ')}${chalk.cyan(' --mac, -m')}
-         package the app using electron-builder as mac distributable, Only works on macOS.
-        
-        ${chalk.green('[optional] ')}${chalk.cyan(' --win -w')}
-        package the app using electron-builder as windows distributable.  
-        
+    options:      
+        ${chalk.red('[mandatory]')}${chalk.cyan(' --type,  -t ')}
+        type of build which will be performed, valid options are  ${chalk.blue('(angular|ng, electron|e)')}
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --bump, -b')}
+        used to bump the version of the app .(${chalk.green('if not specfied will be defaulted to npm version major')})   \n\tvalid options are  ${chalk.blue('(major|minor|patch)')}
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --pack, -p')}
+        if pack version is specified then it will be used to build the app.(${chalk.green('if not specfied will be defaulted to option specified in the bump')})   \n\trather than bumping the package json version.
+
         ${chalk.green('[optional] ')}${chalk.cyan(' --default')}
-        package the app using electron-builder default package json config\n\tfor default config info run ${chalk.blue('ngxeu build MyApp --show-default')}  
+        package the app using electron-builder default package json config.(${chalk.green('if not specified will be defaulted to --default')})\n\tfor default config info run ${chalk.blue('ngxeu build MyApp --show-default')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --no-default')}
-        package the app using electron-builder user defined electron builder config.  
+        package the app using electron-builder user defined builder config.(${chalk.green('if not specfied will be defaulted to --default')})  
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --show-default')}
         shows the default package json config. 
@@ -70,7 +73,8 @@ const menus = {
     usage: ngxeu ${chalk.cyan('fuse')}${chalk.green(' <appName>')} <options>
     
     options:
-    ${chalk.green('[optional] ')}${chalk.cyan(' --skip-ng')}\tskip angular option can be used on an existing angular app.     
+    ${chalk.green('[optional] ')}${chalk.cyan(' --skip-ng')}\t\t\tskip angular option can be used on an existing angular app.     
+    ${chalk.green('[optional] ')}${chalk.cyan(' --inject-build-config --ibc')}\tthis option is used to inject ngxeu build configs to an already installed angular app.     
     `,
 //----------------------------------------------------------------// 
     publish: `
@@ -80,16 +84,33 @@ const menus = {
     
 
     options:
-        ${chalk.green('[optional] ')}${chalk.cyan(' --draft')}\t\t\tupload assets as draft version ${chalk.green('(default)')} 
-        ${chalk.green('[optional] ')}${chalk.cyan(' --release')}\t\t\tupload assets as release version   
-        ${chalk.green('[optional] ')}${chalk.cyan(' --name')}\t\t\trelease name (${chalk.green('if not given will be defaulted to ')}${chalk.red('tag name')})
-        ${chalk.green('[optional] ')}${chalk.cyan(' --target')}\t\t\tbranch name (${chalk.green('if not given will be defaulted to ')}${chalk.red('master')})
-        ${chalk.green('[optional] ')}${chalk.cyan(' --notes')}\t\t\tany notes (${chalk.green('if not given will be defaulted to ')}${chalk.red('empty')})  
-        ${chalk.green('[optional] ')}${chalk.cyan(' --delete, -d, -D')}\t\tdelete a draft,release or a tag by tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.green('--tags=v1.0.0,v1.0.1')}
-        ${chalk.green('[optional] ')}${chalk.cyan(' --tags, --tgs')}\t\tdelete draft or release functionality uses this option to determine the tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --tags=v1.0.0,v1.0.1')}
-        ${chalk.green('[optional] ')}${chalk.cyan(' --emptyTags, --etgs')}\t\tdelete tag functionality uses this option to determine the empty tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --emptyTags=v1.0.0,v1.0.1')}
-        ${chalk.red('[mandatory]')}${chalk.cyan(' --tag,  -t ')}\t\t\trelease/draft tag version 
-        ${chalk.red('[mandatory]')}${chalk.cyan(' --file, -f ')}\t\t\tfile(s) to be uploaded, should be the relative path of the files`,
+        ${chalk.red('[mandatory]')}${chalk.cyan(' --tag,  -t ')}
+        release/draft tag version 
+        
+        ${chalk.red('[mandatory]')}${chalk.cyan(' --files, -f ')}
+        file(s) to be uploaded, should be the relative path of the files
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --draft')}
+        upload assets as draft version ${chalk.green('(default)')} 
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --release')}
+        upload assets as release version
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --target')}
+        branch name (${chalk.green('if not given will be defaulted to ')}${chalk.red('master')})
+        
+        ${chalk.green('[optional] ')}${chalk.cyan(' --notes')}
+        any notes (${chalk.green('if not given will be defaulted to ')}${chalk.red('empty')})  
+        
+        ${chalk.green('[optional] ')}${chalk.cyan(' --delete, -d, -D')}
+        delete a draft,release or a tag by tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.green('--tags=v1.0.0,v1.0.1')}
+        
+        ${chalk.green('[optional] ')}${chalk.cyan(' --tags, --tgs')}
+        delete draft or release functionality uses this option to determine the tag name(s)\n\t eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --tags=v1.0.0,v1.0.1')}
+        
+        ${chalk.green('[optional] ')}${chalk.cyan(' --emptyTags, --etgs')}
+        delete tag functionality uses this option to determine the empty tag name(s)\n\t eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --emptyTags=v1.0.0,v1.0.1')}
+        `,
 //----------------------------------------------------------------// 
     show: `
     usage: ngxeu ${chalk.cyan('show')}${chalk.green(' <appName>')}  <options>

@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const jsonfile = require('jsonfile')
 module.exports = async (args) => {
     if(!args._[1]){
-        console.log(chalk.red('\nError:App name is not specified please specify using command:')+' ngxeu release '+chalk.cyan('MyApp'));
+        console.log(chalk.red('\nError:App name is not specified please specify using command:')+' ngxeu show '+chalk.cyan('MyApp'));
         process.exit();
     }
     let appName = args._[1];

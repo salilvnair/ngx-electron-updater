@@ -1,7 +1,7 @@
-import { NgxeiOption } from "./ngxei-model";
+import { NgxeiOption} from "./ngxei-model";
+import { ArchiveInfo } from "./archive-info";
 
-export declare class NgxElectronInstaller {
-    private opts;
+export interface NgxElectronInstaller {
     setOptions(opts: NgxeiOption): void;
     extract(): void;
     addListener(eventName:any, listener:any):void;
@@ -17,6 +17,5 @@ export declare class NgxElectronInstaller {
     removeAllListeners(eventName:any[]):any;
     removeListener(eventName:any, listener:any):any;
     setMaxListeners(n:number):any;
-    testEvent():void;
-
+    archiveInfo():Promise<ArchiveInfo>;
 }

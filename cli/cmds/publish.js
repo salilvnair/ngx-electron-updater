@@ -1,6 +1,10 @@
 const github = require('../util/github-inquirer.util');
 const chalk = require('chalk');
 const ghRelease = require('../util/gh-release.util')
+const fs = require('fs');
+const jsonFile = require('jsonfile');
+const figlet = require('figlet');
+const clear = require('clear');
 module.exports = async (args, draft) => {
     try {
         let files;
@@ -10,9 +14,9 @@ module.exports = async (args, draft) => {
             process.exit();
         }
         let appName = args._[1];
-        //console.log(args)
-        if(args.d||args.delete||args.D){
-           let releases = await getAllReleases(appName);
+        //console.log(args)        
+        let releases = await getAllReleases(appName);
+        if(args.d||args.delete||args.D){           
            if(args.t||args.tag) {
             tag = args.t || args.tag;            
             await processDeletePublishedVersion(appName,tag,args,releases);
@@ -37,8 +41,8 @@ module.exports = async (args, draft) => {
             process.exit();
            }
         }
-        if(args.f || args.file) {
-            let fileArgs = args.f || args.file;
+        if(args.f || args.files) {
+            let fileArgs = args.f || args.files;
             files = [];
             files = fileArgs.split(",");
             //console.log(files);
@@ -47,9 +51,8 @@ module.exports = async (args, draft) => {
             console.log(chalk.red('\nError:file(s) path not mentioned please pass using command:')+' ngxeu publish MyApp'+chalk.cyan(' -f ./test.zip'));
             process.exit();
         }
-        if(args.t || args.tag) {
-            tag = args.t || args.tag;
-            //console.log(tag);
+        if(args.tag|| args.t) {
+            tag = args.tag || args.t;
         }
         else{
             console.log(chalk.red('\nError:release/draft tag name is not mentioned please pass using command:')+' ngxeu publish MyApp'+chalk.cyan(' -t v1.0.0'));
@@ -59,25 +62,22 @@ module.exports = async (args, draft) => {
         if(args.release) {
             draft = false;
         }
-        let name,target, notes;
-        
-        if(args.name) {
-            name = args.name;
-        }
+        let target, notes;
+
         if(args.target) {
             target = args.target;
         }
         if(args.notes) {
             notes = args.notes;
         }
-        processPublish(name, tag, target, notes, files, draft,appName);
+        processPublish(releases,tag, target, notes, files, draft,appName);
         
     } catch (err) {
       console.error(err)
     }
   }
 
-  function processPublish(name, tag, target, notes, files, draft,appName){
+  function processPublish(releases,tag, target, notes, files, draft,appName){
         let accessToken = github.getStoredGithubToken(appName);        
         if(!accessToken) {
            console.log(chalk.red('\nError:access token not found please set one using command: ')+chalk.cyan('ngxeu init '+appName));
@@ -89,7 +89,25 @@ module.exports = async (args, draft) => {
             process.exit();
         }
         //create app-release.json and add it to the files array
-        files.push('./app-release.json');        
+        let name;
+        if(fs.existsSync('./app-release.json')){
+            let appReleaseInfo = jsonFile.readFileSync('./app-release.json');
+            name = appReleaseInfo.version;
+        }
+        else{
+            console.log(chalk.red('\nError:app-release.json is missing please build this app using command: ')+chalk.cyan('ngxeu build '+appName)+' and then publish!');
+            process.exit();
+        }
+        if(releaseVersionExist(releases,tag,name) && !draft){
+            console.log(chalk.red('\nError:App with same version has been published already!, please use a different version to publish a new release.\nor delete this version using '+chalk.cyan('ngxeu publish '+appName+' -d -tag='+tag)));
+            process.exit();
+        }
+        
+        files.push('./app-release.json');     
+        let figi = 'Publishing '+ appName+"-"+name;
+        console.log(
+            chalk.red(figlet.textSync(figi, { font:'Doom'}))
+        );   
         ghRelease.uploadAsset(accessToken,repoDetails.user,repoDetails.repo,name,tag,target,notes,files,draft);
   }
 
@@ -123,6 +141,10 @@ module.exports = async (args, draft) => {
     if(hasTag){
         if(hasMultipleEntriesForTag(releases,tag)){
             if(args.D){
+                let figi = 'Cleaning';
+                console.log(
+                    chalk.red(figlet.textSync(figi, { font:'Doom'}))
+                );
                 let releaseIds = getReleaseIds(releases,tag,args);
                 await ghRelease.deleteReleaseByTag(accessToken,repoDetails.user,repoDetails.repo,tag,releaseIds,null,args.target)
             }
@@ -132,6 +154,10 @@ module.exports = async (args, draft) => {
             }
         }
         else{
+            let figi = 'Cleaning';
+            console.log(
+                chalk.red(figlet.textSync(figi, { font:'Doom'}))
+            );
             let releaseIds = getReleaseIds(releases,tag,args);
             await ghRelease.deleteReleaseByTag(accessToken,repoDetails.user,repoDetails.repo,tag,releaseIds,null,args.target)
         }  
@@ -162,6 +188,10 @@ module.exports = async (args, draft) => {
         process.exit();
     }
     listCmd="all";
+    let figi = 'Cleaning';
+    console.log(
+        chalk.red(figlet.textSync(figi, { font:'Doom'}))
+    );
     await ghRelease.deleteReleaseByTag(accessToken,repoDetails.user,repoDetails.repo,null,null,emptyTags,null);
     process.exit();
   }
@@ -213,4 +243,14 @@ module.exports = async (args, draft) => {
     }
     return hasMulitpleEntries;
   }
+
+  function releaseVersionExist(releases,tag) {
+    let versionExist = false;
+    releases.forEach(element => {
+        if(element.tag_name===tag && !element.draft){
+            versionExist = true;
+          }
+    });
+    return versionExist;
+}
 

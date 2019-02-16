@@ -118,7 +118,27 @@ GithubPublishUtil.prototype.publish = function publish () {
             uploadAssets: ['createRelease', function (results, callback) {
         if (!opts.assets || opts.assets.length === 0) return callback()
         if (results.createRelease.errors || !results.createRelease.upload_url) return callback(results.createRelease)
-  
+        let fileNameBarSpaceObject = calculateCliBarSize(opts.assets);
+        console.log("\n");
+        function calculateCliBarSize(assets) {
+            let fileNameBarSpaceObject = {};
+            let maxSize = 0;
+            assets.forEach(asset=>{
+                var fileName = path.basename(asset);
+                var blockSize = fileName.length;
+                if(maxSize<blockSize){
+                    maxSize = blockSize;
+                }
+            })
+            assets.forEach(asset=>{
+                var fileName = path.basename(asset);
+                var blockSize = fileName.length;
+                let barSpace = maxSize - blockSize;
+                fileNameBarSpaceObject[fileName] = barSpace;
+            })
+            return fileNameBarSpaceObject;
+        }
+
         async.each(opts.assets, function (asset, callback) {
           var fileName = path.basename(asset)
           var uploadUri = results.createRelease.upload_url.split('{')[0] + '?name=' + fileName
@@ -129,7 +149,7 @@ GithubPublishUtil.prototype.publish = function publish () {
             self.emit('upload-asset', fileName)
   
             var stat = fs.statSync(asset)
-            self.emit('asset-info', fileName,stat.size);
+            self.emit('asset-info', fileName,fileNameBarSpaceObject[fileName],stat.size);
             var rd = fs.createReadStream(asset)
             var us = request({
               method: 'POST',

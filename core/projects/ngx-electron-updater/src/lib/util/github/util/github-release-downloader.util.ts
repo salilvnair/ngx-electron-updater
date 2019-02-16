@@ -34,27 +34,25 @@ export class GitHubReleaseUtil {
         return this.githubLatestReleaseInfo.asObservable();
     }
 
-    getLatestReleaseInfo(url:string) {
-        let latestReleaseInfo:Subject<GithubReleaseResponseType> = new Subject<GithubReleaseResponseType>();
-        this.httpClient.get<GithubReleaseResponseType>(url).subscribe(response=>{
-            latestReleaseInfo.next(response);
+    getLatestRelease(url:string) {
+        this.githubLatestReleaseInfo = new Subject<GithubReleaseResponseType>();
+        this.httpClient.get<GithubReleaseResponseType>(url).subscribe(response=>{       
+            this.githubLatestReleaseInfo.next(response);
         });
-        return latestReleaseInfo.asObservable();
+        return this.githubLatestReleaseInfo.asObservable();
     }
 
-    getLatestAppReleaseInfo(url:string) {
+    getLatestReleaseInfo(url:string) {
         let latestReleaseInfo:Subject<AppReleaseInfo> = new Subject<AppReleaseInfo>();
-        this.httpClient.get<GithubReleaseResponseType>(url).subscribe(response=>{
-            this.githubLatestReleaseInfo.next(response);
-            this.githubLatestReleaseInfo.complete();
-            if(response.assets){
-                let releaseAsset:GithubReleaseAsset = response.assets.find(asset=>asset.name===this._appReleaseInfoFile);
+        this.getLatestRelease(url).subscribe(releaseResponse=>{
+            if(releaseResponse && releaseResponse.assets){
+                let releaseAsset:GithubReleaseAsset = releaseResponse.assets.find(asset=>asset.name===this._appReleaseInfoFile);
                 this.httpClient.get<AppReleaseInfo>(releaseAsset.browser_download_url)
                  .subscribe(data => {
                     latestReleaseInfo.next(data);
                   });
             }
-        });
+        })
         return latestReleaseInfo.asObservable();
     }
 

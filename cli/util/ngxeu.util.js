@@ -30,14 +30,14 @@ const ngxeuinclude = input => {
     return state;
   };
   
-  ngxeuignore.format = (section) => {
+  ngxeuinclude.format = (section) => {
     return `# ${section.name}\n${section.patterns.join('\n')}\n\n`;
   };
   
-  ngxeuignore.stringify = (sections, fn = ngxeuignore.format) => {
+  ngxeuinclude.stringify = (sections, fn = ngxeuinclude.format) => {
     let result = '';
     for (let section of [].concat(sections)) result += fn(section);
     return result.trim();
   };
   
-  module.exports = ngxeuignore;
+  module.exports = ngxeuinclude;
