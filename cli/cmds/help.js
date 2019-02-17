@@ -48,16 +48,16 @@ const menus = {
         type of build which will be performed, valid options are  ${chalk.blue('(angular|ng, electron|e)')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --bump, -b')}
-        used to bump the version of the app .(${chalk.green('if not specfied will be defaulted to npm version major')})   \n\tvalid options are  ${chalk.blue('(major|minor|patch)')}
+        used to bump the version of the app .(${chalk.green('defaulted to '+chalk.red('npm version major'))})   \n\tvalid options are  ${chalk.blue('(major|minor|patch)')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --pack, -p')}
-        if pack version is specified then it will be used to build the app.(${chalk.green('if not specfied will be defaulted to option specified in the bump')})   \n\trather than bumping the package json version.
+        if pack version is specified then it will be used to build the app.(${chalk.green('defaulted to '+chalk.red('option specified in the bump'))})   \n\trather than bumping the package json version.
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --default')}
-        package the app using electron-builder default package json config.(${chalk.green('if not specified will be defaulted to --default')})\n\tfor default config info run ${chalk.blue('ngxeu build MyApp --show-default')}
+        package the app using electron-builder default package json config.(${chalk.green('defaulted to '+chalk.red('--default'))})\n\tfor default config info run ${chalk.blue('ngxeu build MyApp --show-default')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --no-default')}
-        package the app using electron-builder user defined builder config.(${chalk.green('if not specfied will be defaulted to --default')})  
+        package the app using electron-builder user defined builder config.(${chalk.green('defaulted to '+chalk.red('--default'))})  
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --show-default')}
         shows the default package json config. 
@@ -97,10 +97,10 @@ const menus = {
         upload assets as release version
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --target')}
-        branch name (${chalk.green('if not given will be defaulted to ')}${chalk.red('master')})
+        branch name (${chalk.green('defaulted to ')}${chalk.red('master')})
         
         ${chalk.green('[optional] ')}${chalk.cyan(' --notes')}
-        any notes (${chalk.green('if not given will be defaulted to ')}${chalk.red('empty')})  
+        any notes (${chalk.green('defaulted to ')}${chalk.red('empty')})  
         
         ${chalk.green('[optional] ')}${chalk.cyan(' --delete, -d, -D')}
         delete a draft,release or a tag by tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.green('--tags=v1.0.0,v1.0.1')}

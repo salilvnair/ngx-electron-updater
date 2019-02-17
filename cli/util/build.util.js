@@ -11,6 +11,7 @@ require('./date.util');
 const figlet = require('figlet');
 const clear = require('clear');
 const fsExtra = require("fs-extra");
+const commonUtil    = require('./common.util');
 
 module.exports =  {
 
@@ -126,6 +127,11 @@ module.exports =  {
         let finalFilesArray = ["**/*"]
         if(includeData){
             finalFilesArray = finalFilesArray.concat(includeData);
+            finalFilesArray.push("!src");
+        }
+        else{
+            finalFilesArray.push("build");
+            finalFilesArray.push("!src");
         }
         let defautBuild = {
             "asar":false,
