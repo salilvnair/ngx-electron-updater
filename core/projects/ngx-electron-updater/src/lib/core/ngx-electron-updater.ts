@@ -1,17 +1,16 @@
 import { Injectable } from "@angular/core";
-import { DownloaderUtil } from "./github/util/downloader.util";
-import { ReleaseInfoType } from "../type/release-info.type";
-import { ElectronAppUtil } from "./github/util/electron-app.util";
+import { ReleaseInfoType } from "./type/release-info.type";
+import { ElectronAppUtil } from "./util/electron-app.util";
 import { GitHubReleaseUtil } from "./github/util/github-release-downloader.util";
 import { Subject } from "rxjs";
 import { GithubReleaseAsset } from "./github/model/github-release.model";
 import { AppUpadateStatus } from "./github/model/app-update-status.model";
 import { DownloadNotifier } from "./github/model/download-status.model";
-import { NgxElectronInstallerUtil } from "./github/util/ngxei/util/ngx-electron-installer.util";
-import { DownloadInfoType } from "../type/download.type";
-import {NgxeiOption} from "./github/util/ngxei/@types/ngxei-model"
-import { OS } from "../type/os.enum";
-import { DefaultDownloadInfo, Path } from "../type/ngxeu.types";
+import { NgxElectronInstallerUtil } from "./ngxei/util/ngx-electron-installer.util";
+import { DownloadInfoType } from "./type/download.type";
+import {NgxeiOption} from "./ngxei/@types/ngxei-model"
+import { OS } from "./type/os.enum";
+import { DefaultDownloadInfo, Path } from "./type/ngxeu.types";
 import { ElectronService } from "ngx-electron";
 
 @Injectable()
@@ -19,42 +18,14 @@ export abstract class NgxElectronUpdater<T> {
     public abstract entityInstance(): T ;
     public abstract appName(): string ;
     constructor(
-        private _downloaderUtil:DownloaderUtil,
         private _electronAppUtil:ElectronAppUtil,
         private _electronService:ElectronService,
         private _gitHubReleaseUtil:GitHubReleaseUtil,
         private _ngxElectronInstallerUtil:NgxElectronInstallerUtil
         ){}
+
     public checkForUpdate() {
         return this._checkForUpdate();
-    }
-
-    private _checkForUpdate() {
-        let updateStatus:Subject<AppUpadateStatus> = new Subject<AppUpadateStatus>();
-        let releaseInfo:ReleaseInfoType = this._getReleaseInfo();
-        let url = GitHubReleaseUtil.getLatestReleaseUrl(releaseInfo);
-        this._gitHubReleaseUtil.getLatestReleaseInfo(url).subscribe(appReleaseInfo=>{
-            let appUpadateStatus:AppUpadateStatus = new AppUpadateStatus();
-            appUpadateStatus.appReleaseInfo = appReleaseInfo;
-            appUpadateStatus.currentAppVersion = this._electronAppUtil.npmVersion();
-            if(appReleaseInfo.version != appUpadateStatus.currentAppVersion){
-                appUpadateStatus.updateAvailable = true;
-                updateStatus.next(appUpadateStatus);
-                updateStatus.complete();
-            }
-            else{
-                appUpadateStatus.updateAvailable = false;
-                updateStatus.next(appUpadateStatus);
-                updateStatus.complete();
-            }
-        });
-        return updateStatus.asObservable();
-    }
-
-    public autoDownload() {
-        // this.checkForUpdate().subscribe(updateStatus=>{
-        //     this.downloadLatest(updateStatus);
-        // })
     }
 
     public download() {
@@ -64,8 +35,7 @@ export abstract class NgxElectronUpdater<T> {
         })
         return downloadNotifierSubject.asObservable();
     }
-
-   
+ 
     public install(){
         this.checkForUpdate().subscribe(updateStatus=>{
             let appVersion = updateStatus.appReleaseInfo.version;
@@ -92,6 +62,36 @@ export abstract class NgxElectronUpdater<T> {
     public downloadAndInstall() {
         this.download();
         this.install();
+    }
+
+    private _checkForUpdate() {
+        let updateStatus:Subject<AppUpadateStatus> = new Subject<AppUpadateStatus>();
+        let releaseInfo:ReleaseInfoType = this._getReleaseInfo();
+        let url = GitHubReleaseUtil.getLatestReleaseUrl(releaseInfo);
+        this._gitHubReleaseUtil.getLatestReleaseInfo(url).subscribe(appReleaseInfo=>{
+            let appUpadateStatus:AppUpadateStatus = new AppUpadateStatus();
+            appUpadateStatus.appReleaseInfo = appReleaseInfo;
+            appUpadateStatus.currentAppVersion = this._electronAppUtil.npmVersion();
+            if(appReleaseInfo.version != appUpadateStatus.currentAppVersion){
+                appUpadateStatus.updateAvailable = true;
+                updateStatus.next(appUpadateStatus);
+                updateStatus.complete();
+            }
+            else{
+                appUpadateStatus.updateAvailable = false;
+                updateStatus.next(appUpadateStatus);
+                updateStatus.complete();
+            }
+        });
+        return updateStatus.asObservable();
+    }
+
+    private _downloadAsset(asset:GithubReleaseAsset) {
+        let downloadUrl = asset.browser_download_url;
+        let fileName = asset.name;
+        console.log(downloadUrl)
+        let downloadRelativePath = this._getAppDownloadPath();
+        return this._ngxElectronInstallerUtil.download(downloadUrl, downloadRelativePath,fileName);
     }
 
     private _downloadLatest(downloadNotifierSubject:Subject<DownloadNotifier>,appUpadateStatus:AppUpadateStatus) {
@@ -156,14 +156,6 @@ export abstract class NgxElectronUpdater<T> {
         return downloadRelativePath;
     }
     
-    private _downloadAsset(asset:GithubReleaseAsset) {
-     let downloadUrl = asset.browser_download_url;
-     let fileName = asset.name;
-     console.log(downloadUrl)
-     let downloadRelativePath = this._getAppDownloadPath();
-     return this._ngxElectronInstallerUtil.download(downloadUrl, downloadRelativePath,fileName);
-    }
-
     private _getDownloadInfo():DownloadInfoType {
         return Reflect.getMetadata("DownloadInfo", this.entityInstance().constructor);
     }
@@ -171,5 +163,4 @@ export abstract class NgxElectronUpdater<T> {
     private _getReleaseInfo():ReleaseInfoType {
         return Reflect.getMetadata("ReleaseInfo", this.entityInstance().constructor);
     }
-
 }

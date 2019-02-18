@@ -2,11 +2,11 @@ import { Injectable } from "@angular/core";
 import { ElectronService } from "ngx-electron";
 import { NgxElectronUpdaterUtil } from "../@types/ngxeu-util";
 import { NgxeiOption } from "../@types/ngxei-model";
-import { DefaultDownloadInfo } from "projects/ngx-electron-updater/src/lib/type/ngxeu.types";
-import { UpdateType } from "projects/ngx-electron-updater/src/lib/type/update-type.enum";
-import { DownloadNotifierType } from "projects/ngx-electron-updater/src/lib/type/download-notifier.type";
+import { DefaultDownloadInfo } from "../../type/ngxeu.types";
+import { UpdateType } from "../../type/update-type.enum";
+import { DownloadNotifierType } from "../../type/download-notifier.type";
 import { Subject } from "rxjs";
-import { DownloadNotifier, DownloadStatus } from "../../../model/download-status.model";
+import { DownloadNotifier, DownloadStatus } from "../../github/model/download-status.model";
 
 
 @Injectable()

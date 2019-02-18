@@ -1,17 +1,12 @@
-import { DownloadInfo } from "projects/ngx-electron-updater/src/lib/decorator/download-info.decorator";
-import { ReleaseInfo } from "projects/ngx-electron-updater/src/lib/decorator/release-info.decorator";
-import { Provider } from "projects/ngx-electron-updater/src/lib/type/provider.enum";
+import { ReleaseInfo, Provider } from "projects/ngx-electron-updater/src/public_api";
 
 export class AppUpdaterConfig {
     @ReleaseInfo({
         user:"salilvnair",
-        repo:"ngxeu",
+        repo:"ngxeu-test",
         provider:Provider.github
     }) 
     gitReleaseUrl:string;
-    // @DownloadInfo({
-    //     suffix:"vdemy-updater/pending/"
-    // }) 
     downloadSuffix:string;
 
 }

@@ -1,6 +1,6 @@
 import { ElectronService } from "ngx-electron";
 import { Injectable } from "@angular/core";
-import { Platform } from "../../../type/platform.enum";
+import { Platform } from "../type/platform.enum";
 @Injectable()
 export class ElectronAppUtil {
     constructor(private electronService:ElectronService){}
