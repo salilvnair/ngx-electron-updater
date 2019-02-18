@@ -1,6 +1,6 @@
 import { ElectronService } from "ngx-electron";
-import { Platform } from "../../../type/platform.enum";
 import { Injectable } from "@angular/core";
+import { Platform } from "../../../type/platform.enum";
 @Injectable()
 export class ElectronAppUtil {
     constructor(private electronService:ElectronService){}
@@ -47,6 +47,10 @@ export class ElectronAppUtil {
 
     localAppDataPath() {
         return this.env().LOCALAPPDATA;
+    }
+
+    appDataPath() {
+        return this.env().APPDATA;
     }
 
     isWindows() {

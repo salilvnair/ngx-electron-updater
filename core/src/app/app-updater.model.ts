@@ -5,13 +5,13 @@ import { Provider } from "projects/ngx-electron-updater/src/lib/type/provider.en
 export class AppUpdaterConfig {
     @ReleaseInfo({
         user:"salilvnair",
-        repo:"vdemy",
+        repo:"ngxeu",
         provider:Provider.github
     }) 
     gitReleaseUrl:string;
-    @DownloadInfo({
-        suffix:"vdemy-updater/pending/"
-    }) 
+    // @DownloadInfo({
+    //     suffix:"vdemy-updater/pending/"
+    // }) 
     downloadSuffix:string;
 
 }

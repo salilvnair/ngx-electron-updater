@@ -14,7 +14,8 @@ module.exports = async (args, draft) => {
             process.exit();
         }
         let appName = args._[1];
-        //console.log(args)        
+        //console.log(args)
+        clear();        
         let releases = await getAllReleases(appName);
         if(args.d||args.delete||args.D){           
            if(args.t||args.tag) {

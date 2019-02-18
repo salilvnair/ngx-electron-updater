@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { ReleaseInfoType } from '../type/release.type';
+import { ReleaseInfoType } from '../type/release-info.type';
 export const URL_PROPERTY_DECORATOR_KEY = "ReleaseInfo";
 export const ReleaseInfo = (value: ReleaseInfoType): PropertyDecorator => {
   return (target) => {

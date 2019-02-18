@@ -7,6 +7,6 @@ export class AppUpdater extends NgxElectronUpdater<AppUpdaterConfig>{
     }
 
     appName():string {
-        return "TestApp"
+        return "ngxeu"
     }
 }

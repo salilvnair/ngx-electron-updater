@@ -39,10 +39,10 @@ module.exports =  {
         let releaseType = "angular";
         if(updateType==="ng"||updateType==="angular"){
             appReleaseInfoPath =  packageJson.ngxeu["ng-build"].packPath;
-            releaseType = "angular";
+            releaseType = "build";
         }
         else {
-            releaseType = "electron";
+            releaseType = "app";
             appReleaseInfoPath =  packageJson.ngxeu["app-build"].packPath;
         }
         appReleaseInfoPath = appReleaseInfoPath+'/app-release.json';
@@ -51,7 +51,7 @@ module.exports =  {
             "name" : appName+"",
             "version": currentVersion+"",
             "released_at":releaseDate+"",
-            "release_type":releaseType+""
+            "type":releaseType+""
         }
         jsonfile.writeFileSync(appReleaseInfoPath,releaseInfo,{spaces: 2, EOL: '\r\n'});  
         console.log(chalk.green('\nRelease info for ' +chalk.cyan(appNameZipWithVersion)+' created successfully!!')); 

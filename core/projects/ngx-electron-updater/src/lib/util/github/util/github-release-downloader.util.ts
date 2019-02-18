@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { ElectronService } from "ngx-electron";
 import { Subject } from "rxjs";
 import { GithubReleaseResponseType, GithubReleaseAsset } from "../model/github-release.model";
-import { ReleaseInfoType } from "../../../type/release.type";
+import { ReleaseInfoType } from "../../../type/release-info.type";
 import { HttpClient } from "@angular/common/http";
 import { AppReleaseInfo } from "../model/app-release.model";
 

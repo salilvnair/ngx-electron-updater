@@ -1,4 +1,4 @@
 <h1>Check For Update</h1>
 <input type="button" value="CheckForUpdate" (click)="onCheckUpdate()">
-<input type="button" value="Download the update" (click)="downloadUpdates()">
-<input type="button" value="Install the update" (click)="installUpdates()">
+<input type="button" value="Download the update" (click)="downloadUpdates()" [disabled]="!enableDownload">
+<input type="button" value="Install the update" (click)="installUpdates()"  [disabled]="!enableDownload">

@@ -3,4 +3,6 @@ export interface NgxeiOption {
     app_dir:string;
     extract_path:string;
     os:string;
+    appName:string;
+    updateType:string;
 }

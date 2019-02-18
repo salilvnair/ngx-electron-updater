@@ -1,5 +1,6 @@
 const buildUtil = require('../util/build.util');
 const chalk = require('chalk');
+const clear = require('clear');
 module.exports = async (args) => {
     if(!args._[1]){
         console.log(chalk.red('\nError:App name is not specified please specify using command:')+' ngxeu build '+chalk.cyan('MyApp'));
@@ -31,6 +32,7 @@ module.exports = async (args) => {
 
 async function processBuild(args, appName) {
     let buildType = args.type||args.t;
+    clear();
     if(buildType==='electron'||buildType==='e'){
         await processElectronBuild(args, appName);
     }
