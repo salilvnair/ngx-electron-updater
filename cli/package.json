@@ -1,7 +1,7 @@
 {
   "name": "@ngxeu/cli",
   "version": "1.0.0",
-  "description": " A command-line tool for ngx-electron-updater package\u001b[D\u001b[D",
+  "description": " A command-line tool for ngx-electron-updater package",
   "main": "ngxeu.js",
   "author": "Salil V Nair",
   "license": "MIT",
@@ -46,24 +46,5 @@
     "shelljs": "^0.8.3",
     "single-line-log": "^1.1.2",
     "touch": "^3.1.0"
-  },
-  "build": {
-    "asar": false,
-    "appId": "test",
-    "productName": "test",
-    "files": [
-      "**/*",
-      "build"
-    ],
-    "mac": {
-      "target": [
-        "zip"
-      ]
-    },
-    "win": {
-      "target": [
-        "zip"
-      ]
-    }
   }
 }
