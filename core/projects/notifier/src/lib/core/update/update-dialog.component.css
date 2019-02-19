@@ -1,0 +1,27 @@
+.update__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.update__container>* {
+  width: 100%;
+}
+
+.version__text{
+  font-weight: bolder;
+}
+
+.notify__ico{
+  position: relative;
+  bottom:70px;
+  right:20px;
+}
+
+._mb10{
+  margin-bottom: 10px;
+}
+
+._mb20{
+  margin-bottom: 20px;
+}

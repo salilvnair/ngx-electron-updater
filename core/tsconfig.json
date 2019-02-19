@@ -24,6 +24,12 @@
       ],
       "ngx-electron-updater/*": [
         "dist/ngx-electron-updater/*"
+      ],
+      "notifier": [
+        "dist/notifier"
+      ],
+      "notifier/*": [
+        "dist/notifier/*"
       ]
     }
   }

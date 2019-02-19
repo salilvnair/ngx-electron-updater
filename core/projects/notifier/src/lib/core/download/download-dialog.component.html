@@ -1,0 +1,14 @@
+<h1 mat-dialog-title #header>Update is being downloaded!</h1>
+<div mat-dialog-content *ngIf="!onlyInstall">
+    <div #progress class="progress__container">
+            <div #bar class="bar__container">
+                <ng-container  *ngIf="data.currentPercentage">
+                        {{data.currentPercentage}}
+                </ng-container>
+            </div>
+    </div>
+</div>
+<div mat-dialog-actions class="action__container" *ngIf="!downloadAndInstall">
+    <button mat-raised-button color="primary" [disabled]="disableInstall" (click)="onClickInstall()">Install</button>
+    <button mat-raised-button color="warn" (click)="onClickClose()">Close</button>
+</div> 
