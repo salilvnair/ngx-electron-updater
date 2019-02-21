@@ -54,6 +54,7 @@ export abstract class NgxElectronUpdater<T> {
             options.app_dir = this._electronAppUtil.appPath();
             options.zip_file_path = downloadRelativePath+Path.separator+appZipFileName;
             options.updateType=updateStatus.appReleaseInfo.type;
+            options.appReleaseInfo = updateStatus.appReleaseInfo;
             this._ngxElectronInstallerUtil.extract(options);
             this._ngxElectronInstallerUtil.replace(options);
         })

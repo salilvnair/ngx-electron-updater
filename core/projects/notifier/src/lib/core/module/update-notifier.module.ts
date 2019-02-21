@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { UpdateNotifierDialog } from '../update/update-dialog.component';
-import { UpdateNotifierService } from '../update/update-dialog.service';
+import { UpdateNotifier } from '../update/update-dialog.service';
 import { NotifierMaterialModule } from './notifier-material.module';
 
 const PROVIDER_ARRAY = [
-  UpdateNotifierService
+  UpdateNotifier
 ];
 
 const DELCARATION_EXPORT_ARRAY = [

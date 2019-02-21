@@ -1,3 +1,5 @@
+import { AppReleaseInfo } from "../../github/model/app-release.model";
+
 export interface NgxeiOption {
     zip_file_path:string;
     app_dir:string;
@@ -5,4 +7,5 @@ export interface NgxeiOption {
     os:string;
     appName:string;
     updateType:string;
+    appReleaseInfo:AppReleaseInfo;
 }

@@ -6,7 +6,7 @@ cat <<EOF >../app-release.json
 {
      "name" : "vdemy",
      "version": "${PACKAGE_VERSION}",
-     "released_at":"${RELEASE_DATE}" 
+     "date":"${RELEASE_DATE}" 
 }
 EOF
 

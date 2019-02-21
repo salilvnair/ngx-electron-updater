@@ -50,7 +50,7 @@ module.exports =  {
         let releaseInfo = {
             "name" : appName+"",
             "version": currentVersion+"",
-            "released_at":releaseDate+"",
+            "date":releaseDate+"",
             "type":releaseType+""
         }
         jsonfile.writeFileSync(appReleaseInfoPath,releaseInfo,{spaces: 2, EOL: '\r\n'});  

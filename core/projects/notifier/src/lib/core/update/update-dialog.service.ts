@@ -7,7 +7,7 @@ import { ActionType } from './type/update-action.enum';
 import { AppUpadateStatus } from 'projects/ngx-electron-updater/src/lib/core/github/model/app-update-status.model';
 
 @Injectable()
-export class  UpdateNotifierService {
+export class  UpdateNotifier {
   constructor(
     public dialog: MatDialog
   ) {}

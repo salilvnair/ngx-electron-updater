@@ -1,6 +1,5 @@
-import { Component, Inject, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, ChangeDetectorRef, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DownloadStatus } from 'projects/ngx-electron-updater/src/public_api';
 import { DownloadDialogData } from './download-dialog-data.model';
 import { ActionType } from '../update/type/update-action.enum';
 

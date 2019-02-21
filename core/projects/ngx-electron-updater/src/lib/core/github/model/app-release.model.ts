@@ -1,6 +1,6 @@
 export class AppReleaseInfo{
     name:string;
     version:string;
-    released_at:string;
+    date:string;
     type:string;
 }
