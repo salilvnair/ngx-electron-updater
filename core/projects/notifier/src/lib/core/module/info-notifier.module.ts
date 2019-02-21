@@ -1,23 +1,22 @@
 import { NgModule } from '@angular/core';
+import { InfoNotifier } from '../info/info.notifier';
+import { InfoNotifierDialog } from '../info/info-dialog.component';
 import { NotifierMaterialModule } from './notifier-material.module';
-import { DownloadNotifier } from '../download/download.notifier';
-import { DownloadNotifierDialog } from '../download/download-dialog.component';
-import { CommonModule } from '@angular/common';
+
 
 const PROVIDER_ARRAY = [
-  DownloadNotifier
+  InfoNotifier
 ];
 
 const DELCARATION_EXPORT_ARRAY = [
-  DownloadNotifierDialog
+  InfoNotifierDialog
 ];
 
 const ENTRY_COMPONENT_ARRAY = [
-  DownloadNotifierDialog
+  InfoNotifierDialog
 ];
 
 const IMPORT_EXPORT_MODULE_ARRAY = [
-  CommonModule,
   NotifierMaterialModule
 ];
 
@@ -33,4 +32,4 @@ const IMPORT_EXPORT_MODULE_ARRAY = [
   providers: [PROVIDER_ARRAY],
   entryComponents:[ENTRY_COMPONENT_ARRAY],
 })
-export class DownloadNotifierModule { }
+export class InfoNotifierModule { }

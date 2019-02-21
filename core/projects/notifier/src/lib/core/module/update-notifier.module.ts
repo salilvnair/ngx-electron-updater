@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { UpdateNotifierDialog } from '../update/update-dialog.component';
-import { UpdateNotifier } from '../update/update-dialog.service';
+import { UpdateNotifier } from '../update/update.notifier';
 import { NotifierMaterialModule } from './notifier-material.module';
 
 const PROVIDER_ARRAY = [

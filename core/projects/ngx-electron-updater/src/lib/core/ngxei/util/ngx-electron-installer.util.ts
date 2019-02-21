@@ -4,9 +4,9 @@ import { NgxElectronUpdaterUtil } from "../@types/ngxeu-util";
 import { NgxeiOption } from "../@types/ngxei-model";
 import { DefaultDownloadInfo } from "../../type/ngxeu.types";
 import { UpdateType } from "../../type/update-type.enum";
-import { DownloadNotifierType } from "../../type/download-notifier.type";
+import { DownloadNotifierValueType } from "../../type/download-notifier-value.type";
 import { Subject } from "rxjs";
-import { DownloadNotifier, DownloadStatus } from "../../github/model/download-status.model";
+import { DownloadNotifierType, DownloadStatus } from "../../github/model/download-status.model";
 import { AppReleaseInfo } from "../../github/model/app-release.model";
 
 
@@ -29,33 +29,33 @@ export class NgxElectronInstallerUtil {
 
     private _removeAllDownloadEventListerners() {
         let ngxeuUtil:NgxElectronUpdaterUtil = this._electronService.remote.require('@ngxeu/util');
-        ngxeuUtil.removeAllListeners(DownloadNotifierType.data);
-        ngxeuUtil.removeAllListeners(DownloadNotifierType.finish);
-        ngxeuUtil.removeAllListeners(DownloadNotifierType.error);
+        ngxeuUtil.removeAllListeners(DownloadNotifierValueType.data);
+        ngxeuUtil.removeAllListeners(DownloadNotifierValueType.finish);
+        ngxeuUtil.removeAllListeners(DownloadNotifierValueType.error);
     }
 
     private _download(url:string, downloadPath:string,fileName:string){
-        let downloadNotifierSubject:Subject<DownloadNotifier> = new Subject<DownloadNotifier>();
+        let downloadNotifierSubject:Subject<DownloadNotifierType> = new Subject<DownloadNotifierType>();
         let ngxeuUtil:NgxElectronUpdaterUtil = this._electronService.remote.require('@ngxeu/util');
-        let downloadNotifier:DownloadNotifier;
+        let downloadNotifier:DownloadNotifierType;
         ngxeuUtil.download(url, downloadPath,fileName);
-        ngxeuUtil.on(DownloadNotifierType.data,(data:DownloadStatus)=>{
-            downloadNotifier = new DownloadNotifier();
-            downloadNotifier.key = DownloadNotifierType.data;
+        ngxeuUtil.on(DownloadNotifierValueType.data,(data:DownloadStatus)=>{
+            downloadNotifier = new DownloadNotifierType();
+            downloadNotifier.key = DownloadNotifierValueType.data;
             downloadNotifier.value = data;
             downloadNotifierSubject.next(downloadNotifier);
         });
-        ngxeuUtil.on(DownloadNotifierType.finish,()=>{
+        ngxeuUtil.on(DownloadNotifierValueType.finish,()=>{
             this._removeAllDownloadEventListerners();
-            downloadNotifier = new DownloadNotifier();
-            downloadNotifier.key = DownloadNotifierType.finish;
+            downloadNotifier = new DownloadNotifierType();
+            downloadNotifier.key = DownloadNotifierValueType.finish;
             downloadNotifier.path = downloadPath;
             downloadNotifierSubject.next(downloadNotifier);
             downloadNotifierSubject.complete();
         });
-        ngxeuUtil.on(DownloadNotifierType.error,(error:DownloadStatus)=>{
-            downloadNotifier = new DownloadNotifier();
-            downloadNotifier.key = DownloadNotifierType.error;
+        ngxeuUtil.on(DownloadNotifierValueType.error,(error:DownloadStatus)=>{
+            downloadNotifier = new DownloadNotifierType();
+            downloadNotifier.key = DownloadNotifierValueType.error;
             downloadNotifier.value = error;
             downloadNotifierSubject.next(downloadNotifier);
         });

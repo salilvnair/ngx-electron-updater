@@ -5,7 +5,7 @@ import { GitHubReleaseUtil } from "./github/util/github-release-downloader.util"
 import { Subject } from "rxjs";
 import { GithubReleaseAsset } from "./github/model/github-release.model";
 import { AppUpadateStatus } from "./github/model/app-update-status.model";
-import { DownloadNotifier } from "./github/model/download-status.model";
+import { DownloadNotifierType } from "./github/model/download-status.model";
 import { NgxElectronInstallerUtil } from "./ngxei/util/ngx-electron-installer.util";
 import { DownloadInfoType } from "./type/download.type";
 import {NgxeiOption} from "./ngxei/@types/ngxei-model"
@@ -29,7 +29,7 @@ export abstract class NgxElectronUpdater<T> {
     }
 
     public download() {
-        let downloadNotifierSubject:Subject<DownloadNotifier> = new Subject<DownloadNotifier>();
+        let downloadNotifierSubject:Subject<DownloadNotifierType> = new Subject<DownloadNotifierType>();
         this.checkForUpdate().subscribe(updateStatus=>{
             this._downloadLatest(downloadNotifierSubject,updateStatus);
         })
@@ -95,7 +95,7 @@ export abstract class NgxElectronUpdater<T> {
         return this._ngxElectronInstallerUtil.download(downloadUrl, downloadRelativePath,fileName);
     }
 
-    private _downloadLatest(downloadNotifierSubject:Subject<DownloadNotifier>,appUpadateStatus:AppUpadateStatus) {
+    private _downloadLatest(downloadNotifierSubject:Subject<DownloadNotifierType>,appUpadateStatus:AppUpadateStatus) {
         let releaseInfo:ReleaseInfoType = this._getReleaseInfo();        
         let url = GitHubReleaseUtil.getLatestReleaseUrl(releaseInfo);
         this._gitHubReleaseUtil.getLatestRelease(url).subscribe(response=>{

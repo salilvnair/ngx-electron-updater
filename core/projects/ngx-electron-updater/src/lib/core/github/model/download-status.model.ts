@@ -5,7 +5,7 @@ export class DownloadStatus {
     errorMessage?:string;
 }
 
-export class DownloadNotifier {
+export class DownloadNotifierType {
     key:string;
     value:DownloadStatus;
     path?:string;

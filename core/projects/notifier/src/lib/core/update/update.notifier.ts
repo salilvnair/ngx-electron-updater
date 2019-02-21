@@ -9,10 +9,10 @@ import { AppUpadateStatus } from 'projects/ngx-electron-updater/src/lib/core/git
 @Injectable()
 export class  UpdateNotifier {
   constructor(
-    public dialog: MatDialog
+    private dialog: MatDialog
   ) {}
 
-  public openUpdateDialog(appUpadateStatus:AppUpadateStatus) {
+  public notify(appUpadateStatus:AppUpadateStatus) {
     let dialogAction:Subject<NotifierAction> = new Subject<NotifierAction>();
     let dialogRef = this.dialog.open(UpdateNotifierDialog, {
       width: '460px',
