@@ -6,7 +6,14 @@ module.exports = async (args) => {
         console.log(chalk.red('\nError:App name is not specified please specify using command:')+' ngxeu build '+chalk.cyan('MyApp'));
         process.exit();
     }
+    
     let appName = args._[1];
+
+    if(args["show-default"]){
+        buildUtil.showDefaultBuildConfig(args, appName);
+        process.exit();
+    }
+
     if(!args.type && !args.t){
         console.log(chalk.red('\nError:Build type is not specified please specify using command:')+' ngxeu build MyApp'+chalk.cyan(' --type=angular or --type=ng or --type=electron or --type=e'));
         process.exit();
@@ -20,10 +27,6 @@ module.exports = async (args) => {
         }
     }
 
-    if(args["show-default"]){
-        buildUtil.showDefaultBuildConfig(args, appName);
-        process.exit();
-    }
     if(!await processBuild(args, appName)){
         require('./help')(args);
         process.exit();

@@ -45,22 +45,22 @@ const menus = {
     
     options:      
         ${chalk.red('[mandatory]')}${chalk.cyan(' --type,  -t ')}
-        type of build which will be performed, valid options are  ${chalk.blue('(angular|ng, electron|e)')}
+         type of build which will be performed, valid options are  ${chalk.blue('(angular|ng, electron|e)')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --bump, -b')}
-        used to bump the version of the app .(${chalk.green('defaulted to '+chalk.red('npm version major'))})   \n\tvalid options are  ${chalk.blue('(major|minor|patch)')}
+         used to bump the version of the app .(${chalk.green('defaulted to '+chalk.red('npm version major'))})   \n\t valid options are  ${chalk.blue('(major|minor|patch)')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --pack, -p')}
-        if pack version is specified then it will be used to build the app.(${chalk.green('defaulted to '+chalk.red('option specified in the bump'))})   \n\trather than bumping the package json version.
+         if pack version is specified then it will be used to build the app.(${chalk.green('defaulted to '+chalk.red('option specified in the bump'))})   \n\t rather than bumping the package json version.
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --default')}
-        package the app using electron-builder default package json config.(${chalk.green('defaulted to '+chalk.red('--default'))})\n\tfor default config info run ${chalk.blue('ngxeu build MyApp --show-default')}
+         package the app using electron-builder default package json config.(${chalk.green('defaulted to '+chalk.red('--default'))})\n\t for default config info run ${chalk.blue('ngxeu build MyApp --show-default\n\t')} ${chalk.bold.underline.red('NOTE: The --type option is not mandatory here and can be omitted.')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --no-default')}
-        package the app using electron-builder user defined builder config.(${chalk.green('defaulted to '+chalk.red('--default'))})  
+         package the app using electron-builder user defined builder config.(${chalk.green('defaulted to '+chalk.red('--default'))})  
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --show-default')}
-        shows the default package json config. 
+         shows the default package json config. 
     `,        
 //----------------------------------------------------------------// 
     config:`
@@ -73,8 +73,11 @@ const menus = {
     usage: ngxeu ${chalk.cyan('fuse')}${chalk.green(' <appName>')} <options>
     
     options:
-    ${chalk.green('[optional] ')}${chalk.cyan(' --skip-ng')}\t\t\tskip angular option can be used on an existing angular app.     
-    ${chalk.green('[optional] ')}${chalk.cyan(' --inject-build-config --ibc')}\tthis option is used to inject ngxeu build configs to an already installed angular app.     
+        ${chalk.green('[optional] ')}${chalk.cyan(' --skip-ng')}
+         skip angular option can be used on an existing angular app. 
+            
+        ${chalk.green('[optional] ')}${chalk.cyan(' --inject-build-config --ibc')}
+         this option is used to inject ngxeu build configs to an already installed angular app.     
     `,
 //----------------------------------------------------------------// 
     publish: `
@@ -85,31 +88,31 @@ const menus = {
 
     options:
         ${chalk.red('[mandatory]')}${chalk.cyan(' --tag,  -t ')}
-        release/draft tag version 
+         release/draft tag version 
         
         ${chalk.red('[mandatory]')}${chalk.cyan(' --files, -f ')}
-        file(s) to be uploaded, should be the relative path of the files
+         file(s) to be uploaded, should be the relative path of the files
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --draft')}
-        upload assets as draft version ${chalk.green('(default)')} 
+         upload assets as draft version ${chalk.green('(default)')} 
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --release')}
-        upload assets as release version
+         upload assets as release version
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --target')}
-        branch name (${chalk.green('defaulted to ')}${chalk.red('master')})
+         branch name (${chalk.green('defaulted to ')}${chalk.red('master')})
         
         ${chalk.green('[optional] ')}${chalk.cyan(' --notes')}
-        any notes (${chalk.green('defaulted to ')}${chalk.red('empty')})  
+         any notes or release change log (${chalk.green('defaulted to ')}${chalk.red('empty')})  
         
         ${chalk.green('[optional] ')}${chalk.cyan(' --delete, -d, -D')}
-        delete a draft,release or a tag by tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.green('--tags=v1.0.0,v1.0.1')}
+         delete a draft,release or a tag by tag name(s) eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.green('--tags=v1.0.0,v1.0.1')}
         
         ${chalk.green('[optional] ')}${chalk.cyan(' --tags, --tgs')}
-        delete draft or release functionality uses this option to determine the tag name(s)\n\t eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --tags=v1.0.0,v1.0.1')}
+         delete draft or release functionality uses this option to determine the tag name(s)\n\t eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --tags=v1.0.0,v1.0.1')}
         
         ${chalk.green('[optional] ')}${chalk.cyan(' --emptyTags, --etgs')}
-        delete tag functionality uses this option to determine the empty tag name(s)\n\t eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --emptyTags=v1.0.0,v1.0.1')}
+         delete tag functionality uses this option to determine the empty tag name(s)\n\t eg: ${chalk.green('ngxeu publish MyApp')} ${chalk.red('-D')} ${chalk.cyan(' --emptyTags=v1.0.0,v1.0.1')}
         `,
 //----------------------------------------------------------------// 
     show: `

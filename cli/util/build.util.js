@@ -11,7 +11,6 @@ require('./date.util');
 const figlet = require('figlet');
 const clear = require('clear');
 const fsExtra = require("fs-extra");
-const commonUtil    = require('./common.util');
 
 module.exports =  {
 
