@@ -9,15 +9,15 @@ const menus = {
 
     commands:
     
-        ${chalk.cyan('init')}\t\tinitializes github release related meta data
+        ${chalk.cyan('init')}\t\tInitializes github release related meta data
 
         ${chalk.cyan('fuse')}\t\tCreates a fusion between angular and electron app.  
 
-        ${chalk.cyan('build')}\t\tbuilds the electron app into windows/mac distributables.        
+        ${chalk.cyan('build')}\t\tBuilds the electron app into windows/mac distributables.        
 
-        ${chalk.cyan('publish')}\t\tpublishes the assests using the github release API v3
+        ${chalk.cyan('publish')}\t\tPublishes the assests using the github release API v3
 
-        ${chalk.cyan('show')}\t\tshows the list of releases for an app        
+        ${chalk.cyan('show')}\t\tShows the list of releases for an app        
         
     for more help run ${chalk.cyan('ngxeu <command> -h')}  to get quick help on <command>
         `,
