@@ -75,6 +75,12 @@ const menus = {
     options:
         ${chalk.green('[optional] ')}${chalk.cyan(' --skip-ng')}
          skip angular option can be used on an existing angular app. 
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --skip-el')}
+         skip electron installation.  
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --ts')}${chalk.green(' (if not specified will be defaulted to js)')}
+         use typescript for building electron app i.e. main.ts instead of main.js 
             
         ${chalk.green('[optional] ')}${chalk.cyan(' --inject-build-config --ibc')}
          this option is used to inject ngxeu build configs to an already installed angular app.     

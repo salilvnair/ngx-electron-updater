@@ -38,5 +38,8 @@
     "request-promise": "^4.2.2",
     "shelljs": "^0.8.3",
     "single-line-log": "^1.1.2"
+  },
+  "peerDependencies": {
+    "electron": ">=3.0.6"
   }
 }

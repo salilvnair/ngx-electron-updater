@@ -52,11 +52,14 @@ async function processCreatingNgElectronFusion(args,appName) {
     }
    
     let appRootDir = shellJs.pwd()+"";
-    copyDefaultMainTemplateIntoRootDir(appRootDir);
+    copyDefaultMainTemplateIntoRootDir(args,appRootDir);
     setInfoInPackageJson(args,appRootDir);
+    if(args['skip-el']){
+        console.log(chalk.red(figlet.textSync('Fused',{font:'Fire Font-k'})));
+        process.exit();
+    }
     let installElectronCmd = "npm install electron --save-dev";
     shellJs.exec(installElectronCmd);
-
     let installElectronBuilderCmd = "npm install electron-builder --save-dev";
     shellJs.exec(installElectronBuilderCmd);
     console.log(chalk.red(figlet.textSync('Fused',{font:'Fire Font-k'})));
@@ -88,7 +91,14 @@ function setInfoInPackageJson(args,rootDir) {
     else{
         electronDevDependencies["electron-builder"] =  "^20.38.2";
     }
-    packageJson.scripts["electron"] = "./node_modules/.bin/electron .";
+    packageJson.scripts["electron"] = "./node_modules/.bin/electron .";   
+    if(args.ts){
+        packageJson.main = "./dist/main.js";
+        packageJson.scripts["build-electron"] = "cd main/core && tsc";
+        packageJson.scripts["build-lib"] = "cd main/ts-lib && tsc";
+        packageJson.scripts["build"] = "npm run build-lib && npm run build-electron";
+        packageJson.scripts["fire"] = "npm run build && npm run electron";
+    }
     let ngxeu = {
         app:{
             dependencies:{
@@ -110,11 +120,46 @@ function setInfoInPackageJson(args,rootDir) {
     jsonfile.writeFileSync(packageJsonPath,packageJson,{spaces: 2, EOL: '\r\n'});
 }
 
-function copyDefaultMainTemplateIntoRootDir(rootDir) {
-    let electronMainTemplateFilePath = path.join(__dirname,'template','electron-main-template.js');
-    var mainJsFileContent = fs.readFileSync(electronMainTemplateFilePath, 'utf8');
-    let mainJsCopyPath = path.join(rootDir,"main.js");
-    fs.writeFileSync(mainJsCopyPath,mainJsFileContent);
+function copyDefaultMainTemplateIntoRootDir(args,rootDir) {
+    if(args.ts){
+        let electronMainTemplateFile = "electron-main-template.ts";
+        let electronMainFile = "main.ts";
+        let libFolder = "ts-lib";
+        let coreFolder = "core";
+        let tsMainPath = path.join(rootDir,"main");
+        let libCopyPath = path.join(tsMainPath,libFolder);
+        forceCreateDirIfNotExist(libCopyPath);
+        let corePath = path.join(tsMainPath,coreFolder);
+        forceCreateDirIfNotExist(corePath);
+        let electronMainTemplateFilePath = path.join(__dirname,'template',electronMainTemplateFile);
+        var mainJsFileContent = fs.readFileSync(electronMainTemplateFilePath, 'utf8');    
+        let mainJsCopyPath = path.join(corePath,electronMainFile);
+        fs.writeFileSync(mainJsCopyPath,mainJsFileContent);
+
+        let electronTsConfigMainJsPath = path.join(__dirname,'template',"mainjs-tsconfig.json");
+        var tsConfigMainJsFileContent = fs.readFileSync(electronTsConfigMainJsPath, 'utf8'); 
+        let tsConfigMainJsPath = path.join(corePath,"tsconfig.json");
+        fs.writeFileSync(tsConfigMainJsPath,tsConfigMainJsFileContent);
+
+        let electronTsConfigLibJsPath = path.join(__dirname,'template',"tslib-tsconfig.json");
+        var tsConfigLibJsFileContent = fs.readFileSync(electronTsConfigLibJsPath, 'utf8'); 
+        let tsConfigLibJsPath = path.join(libCopyPath,"tsconfig.json");
+        fs.writeFileSync(tsConfigLibJsPath,tsConfigLibJsFileContent);
+
+        let sampleTsPath = path.join(libCopyPath,"sample.ts");
+        fs.writeFileSync(sampleTsPath,"");
+    }
+    else{
+        let electronMainTemplateFile = "electron-main-template.js";
+        let electronMainFile = "main.js";
+        let libFolder = "js-lib";
+        let electronMainTemplateFilePath = path.join(__dirname,'template',electronMainTemplateFile);
+        var mainJsFileContent = fs.readFileSync(electronMainTemplateFilePath, 'utf8');    
+        let mainJsCopyPath = path.join(rootDir,electronMainFile);
+        fs.writeFileSync(mainJsCopyPath,mainJsFileContent);
+        let libCopyPath = path.join(rootDir,libFolder);
+        forceCreateDirIfNotExist(libCopyPath);
+    }
 }
 
 async function promptInstallingNgxElectron (appName){
@@ -123,6 +168,20 @@ async function promptInstallingNgxElectron (appName){
     const input = await inquirer.askConfirmationQuestion(message);
     if(input) {           
         return input.question;
+    }
+}
+
+function forceCreateDirIfNotExist(dir) {
+    if (fs.existsSync(dir)) {
+      return;
+    }
+    try {
+      fs.mkdirSync(dir);
+    } catch (err) {
+      if (err.code==="ENOENT") {
+        forceCreateDirIfNotExist(path.dirname(dir)); //create parent dir
+        forceCreateDirIfNotExist(dir); //create dir
+      }
     }
 }
 

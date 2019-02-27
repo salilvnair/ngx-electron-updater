@@ -406,9 +406,9 @@ function processElectronAsSeperateApp(args, appName, electronBuildCmd) {
     var mainJsFileContent = fs.readFileSync('./main.js', 'utf8');
     let mainJsCopyPath = path.join(newElectronRootPath,"main.js");
     fs.writeFileSync(mainJsCopyPath,mainJsFileContent);
-    let jsLibCopyPath = path.join(newElectronRootPath,"js_lib");
-    if(fs.existsSync("./js_lib")){
-        fsExtra.copySync("./js_lib", jsLibCopyPath);
+    let libCopyPath = path.join(newElectronRootPath,"js-lib");
+    if(fs.existsSync("./js-lib")){
+        fsExtra.copySync("./js-lib", libCopyPath);
     }
     return newElectronRootPath;
 }
