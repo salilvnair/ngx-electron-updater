@@ -18,6 +18,7 @@ NgxElectronUpdaterUtil.prototype.setOptions = function(opts){
 NgxElectronUpdaterUtil.prototype.extract = function() {
     var opts = this.opts
     _extract(opts,this);
+    console.log("extraction done");
 }
 NgxElectronUpdaterUtil.prototype.archiveInfo = function() {
   let ZIP_FILE_PATH = this.opts.zip_file_path;
@@ -71,7 +72,9 @@ function _extract(options,installer){
         entry.autodrain();
       }
     }
-  )
+  ).on('finish',()=>{
+    installer.emit('finish');
+  });
 }
 
 function _forceCreateDir(dir) {

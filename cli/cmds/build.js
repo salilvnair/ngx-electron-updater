@@ -77,10 +77,11 @@ async function processAngularBuild(args, appName) {
         }
     }
     if(args.pack||args.p){
+        console.log(chalk.red(figlet.textSync('Packaging '+appName,{ font:'Doom'})));
         let electronPackageJsonPath = buildUtil.electronBuildPath(args,appName);
         buildUtil.electronBuild(args,appName,electronPackageJsonPath);
-        buildUtil.createReleaseInfo(args,appName); 
-        console.log(chalk.red(figlet.textSync('PACKAGED',{font:'Fire Font-k'})));
+        buildUtil.createReleaseInfo(args,appName);  
+        console.log(chalk.green(figlet.textSync('\nFinished!!!',{ font:'Doom'})));       
     }
     return true;
 }

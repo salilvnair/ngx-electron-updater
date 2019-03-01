@@ -1,0 +1,14 @@
+{
+  "name": "@ngxeu/core",
+  "version": "0.0.2",
+  "peerDependencies": {
+    "@angular/common": "^7.0.0",
+    "@angular/core": "^7.0.0",
+    "electron": "^4.0.0",
+    "ngx-electron": "^2.1.1",
+    "follow-redirects": "^1.6.1",
+    "fs-extra": "^7.0.1",
+    "jsonfile": "^5.0.0",
+    "unzipper": "^0.9.10"
+  }
+}

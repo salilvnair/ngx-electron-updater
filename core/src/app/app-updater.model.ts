@@ -1,4 +1,5 @@
-import { ReleaseInfo, Provider } from "projects/ngx-electron-updater/src/public_api";
+import { ReleaseInfo, Provider } from "@ngxeu/core";
+
 
 export class AppUpdaterConfig {
     @ReleaseInfo({

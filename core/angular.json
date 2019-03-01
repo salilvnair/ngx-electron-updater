@@ -132,33 +132,33 @@
         }
       }
     },
-    "ngx-electron-updater": {
-      "root": "projects/ngx-electron-updater",
-      "sourceRoot": "projects/ngx-electron-updater/src",
+    "core": {
+      "root": "projects/core",
+      "sourceRoot": "projects/core/src",
       "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/ngx-electron-updater/tsconfig.lib.json",
-            "project": "projects/ngx-electron-updater/ng-package.json"
+            "tsConfig": "projects/core/tsconfig.lib.json",
+            "project": "projects/core/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-electron-updater/src/test.ts",
-            "tsConfig": "projects/ngx-electron-updater/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-electron-updater/karma.conf.js"
+            "main": "projects/core/src/test.ts",
+            "tsConfig": "projects/core/tsconfig.spec.json",
+            "karmaConfig": "projects/core/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ngx-electron-updater/tsconfig.lib.json",
-              "projects/ngx-electron-updater/tsconfig.spec.json"
+              "projects/core/tsconfig.lib.json",
+              "projects/core/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

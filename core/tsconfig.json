@@ -19,11 +19,11 @@
       "dom"
     ],
     "paths": {
-      "ngx-electron-updater": [
-        "dist/ngx-electron-updater"
+      "core": [
+        "dist/core"
       ],
-      "ngx-electron-updater/*": [
-        "dist/ngx-electron-updater/*"
+      "core/*": [
+        "dist/core/*"
       ],
       "notifier": [
         "dist/notifier"

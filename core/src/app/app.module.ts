@@ -2,10 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { NgxElectronUpdaterModule } from 'projects/ngx-electron-updater/src/public_api';
+import { NgxElectronUpdaterModule } from '@ngxeu/core';
 import { AppUpdater } from './app.updater';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NotifierModule } from 'projects/notifier/src/public_api';
+import { NotifierModule } from '@ngxeu/notifier';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
