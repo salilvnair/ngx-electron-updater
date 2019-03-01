@@ -1,6 +1,7 @@
 const buildUtil = require('../util/build.util');
 const chalk = require('chalk');
 const clear = require('clear');
+const figlet = require('figlet');
 module.exports = async (args) => {
     if(!args._[1]){
         console.log(chalk.red('\nError:App name is not specified please specify using command:')+' ngxeu build '+chalk.cyan('MyApp'));
@@ -13,7 +14,7 @@ module.exports = async (args) => {
         buildUtil.showDefaultBuildConfig(args, appName);
         process.exit();
     }
-
+    
     if(!args.type && !args.t){
         console.log(chalk.red('\nError:Build type is not specified please specify using command:')+' ngxeu build MyApp'+chalk.cyan(' --type=angular or --type=ng or --type=electron or --type=e'));
         process.exit();
@@ -66,16 +67,20 @@ async function processAngularBuild(args, appName) {
     }
     let angularBuildCmd = buildUtil.prepareAngularBuildCmd(args, appName);
     //console.log(electronBuildCmd);
-    if(angularBuildCmd){
+    if(angularBuildCmd && !args["skip-ng"]){
         buildUtil.modifyPackageJson(args, appName, angularBuildCmd);
         buildUtil.ngBuild(args,appName);
         let electronBuildCmd = buildUtil.prepareElectronBuildCmd(args, appName);
-        let electronPackageJsonPath = buildUtil.moveAndInstallElectronPackage(args,appName,electronBuildCmd); 
+        buildUtil.moveAndInstallElectronPackage(args,appName,electronBuildCmd); 
+        if(args.icon||args.i){
+            buildUtil.copyIconToBuild(args, appName); 
+        }
+    }
+    if(args.pack||args.p){
+        let electronPackageJsonPath = buildUtil.electronBuildPath(args,appName);
         buildUtil.electronBuild(args,appName,electronPackageJsonPath);
         buildUtil.createReleaseInfo(args,appName); 
-        return true;
+        console.log(chalk.red(figlet.textSync('PACKAGED',{font:'Fire Font-k'})));
     }
-    else{
-        return false;
-    }
+    return true;
 }

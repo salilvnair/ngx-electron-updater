@@ -26,16 +26,20 @@ const menus = {
     usage: ngxeu ${chalk.cyan('init')}${chalk.green(' <appName>')}  
 
     commands:
-        ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  prompts user to enter github token and repository details then saves it in config.
-    
+        ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  unique app name
+
     options:
-        ${chalk.green('[optional] ')}${chalk.cyan('  --list, -l')}\t\t\t\t shows the list of stored app tokens and repo details.${chalk.bold.red('(The appName is not mandatory here and can be omitted.)')}
+        ${chalk.green('[optional] ')}${chalk.cyan('  --list, -l')}
+         shows the list of stored app tokens and repo details.${chalk.bold.red('(The appName is not mandatory here and can be omitted.)')}
         
-        ${chalk.green('[optional] ')}${chalk.cyan('  --clear, -c')}\t\t\t deletes the existing access token and repo details if any.
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear, -c')}
+         deletes the existing access token and repo details if any.
         
-        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-token, -ct')}\t\t\t deletes the existing access token if any.
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-token, -ct')}
+         deletes the existing access token if any.
         
-        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-repodetails, -cr')}\t\t deletes the existing repo details if any..
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-repodetails, -cr')}
+         deletes the existing repo details if any..
         
         `,      
 
@@ -52,11 +56,20 @@ const menus = {
         ${chalk.green('[optional] ')}${chalk.cyan(' --bump, -b')}
          used to bump the version of the app .(${chalk.green('defaulted to '+chalk.red('npm version major'))})   \n\t valid options are  ${chalk.blue('(major|minor|patch)')}
 
+        ${chalk.green('[optional] ')}${chalk.cyan(' --skip-ng')}
+         skip angular build if already done once,\n\t usually used when a new logo is placed in the build directory.
+
         ${chalk.green('[optional] ')}${chalk.cyan(' --pack, -p')}
-         if pack version is specified then it will be used to build the app.(${chalk.green('defaulted to '+chalk.red('option specified in the bump'))})   \n\t rather than bumping the package json version.
+         package the app using electron-builder and if pack version is specified \n\t then it will be used to build the app.
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --icon, -i')}
+         specify the location of icon file ${chalk.bold.underline.red('(name should be one of icon.png, icon.ico, icon.icns)')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --default')}
          package the app using electron-builder default package json config.(${chalk.green('defaulted to '+chalk.red('--default'))})\n\t for default config info run ${chalk.blue('ngxeu build MyApp --show-default\n\t')} ${chalk.bold.underline.red('NOTE: The --type option is not mandatory here and can be omitted.')}
+
+        ${chalk.green('[optional] ')}${chalk.cyan(' --debug')}
+         start electron-builder in debug mode.
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --no-default')}
          package the app using electron-builder user defined builder config.(${chalk.green('defaulted to '+chalk.red('--default'))})  

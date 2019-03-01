@@ -104,7 +104,7 @@ function setInfoInPackageJson(args,rootDir) {
             dependencies:{
                 "nedb": "^1.8.0"
             },
-            devDependencies: existingDevDependencies,
+            devDependencies: electronDevDependencies,
             rootPath:"../ngxeu/electron"
         },
         "app-build":{

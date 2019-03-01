@@ -150,8 +150,35 @@ module.exports =  {
 
         }
         console.log(chalk.cyan(JSON.stringify(defautBuild, null, 2)));
+    },
+
+    electronBuildPath: (args, appName) =>{
+        return getNewElectronPath(appName);
+    },
+
+    copyIconToBuild:(args,appName) =>{
+        copyIconFileIntoBuildFolder(args,appName);
     }
 
+}
+
+function copyIconFileIntoBuildFolder(args,appName) {
+    let iconFile = args.icon||args.i;
+    let iconFileName = path.basename(iconFile);
+    if(iconFile) {
+        let electronAppPath = getNewElectronPath(appName);
+        let buildPath = path.resolve(electronAppPath,"build");
+        if(fs.existsSync(buildPath)) {
+            let newIconPath = path.resolve(buildPath,iconFileName);
+            console.log(chalk.green('\nCopying Icon file... ' +chalk.cyan(iconFile)+'.'));
+            fsExtra.copySync(iconFile, newIconPath);
+        }
+    }
+}
+
+function getNewElectronPath(appName){
+    let packageJson = jsonfile.readFileSync('./package.json');
+    return getElectronBuildFolder(appName,packageJson);
 }
 
 async function promptElectronBuilderNpmInstall (appName){
@@ -363,13 +390,12 @@ function ngxeuBuild(args,appName,pkgJsonFilePath,cont) {
             jsonfile.writeFileSync(packageJsonFile,packageJson,{spaces: 2, EOL: '\r\n'});  
         }
         else{
-            let bumpVal = "major";
             if(args.bump||args.b){
-                bumpVal = args.bump||args.b;
+                let bumpVal = args.bump||args.b;
+                console.log(chalk.green('\nBumping the version...'));
+                let updateVersionCmd = "npm version "+bumpVal;
+                shellJs.exec(updateVersionCmd);
             }
-            console.log(chalk.green('\nBumping the version...'));
-            let updateVersionCmd = "npm version "+bumpVal;
-            shellJs.exec(updateVersionCmd);
         }
     }
     if(!cont) {
