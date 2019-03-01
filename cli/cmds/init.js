@@ -3,6 +3,10 @@ const chalk = require('chalk');
 module.exports = async (args) => {
     try {
         //console.log(args)
+        if(args.list||args.l){
+            console.log(chalk.cyan(JSON.stringify(github.getAllConfigData(), null, 2)));
+            process.exit();
+        }
         if(!args._[1]){
             console.log(chalk.red('\nError:App name is not specified please specify using command:')+' ngxeu init '+chalk.cyan('MyApp'));
             process.exit();

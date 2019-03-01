@@ -5,6 +5,9 @@ const conf = new Configstore(pkg.name);
 const chalk = require('chalk');
 var shell = require('shelljs');
 module.exports = {
+    getAllConfigData:() => {
+        return conf.all;
+    },
     getStoredGithubToken : (appName) => {
         return conf.get(appName+'.github.token');
         

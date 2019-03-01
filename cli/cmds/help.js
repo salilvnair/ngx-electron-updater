@@ -29,6 +29,8 @@ const menus = {
         ${chalk.red('[mandatory]')}${chalk.cyan('  appName')}  prompts user to enter github token and repository details then saves it in config.
     
     options:
+        ${chalk.green('[optional] ')}${chalk.cyan('  --list, -l')}\t\t\t\t shows the list of stored app tokens and repo details.${chalk.bold.red('(The appName is not mandatory here and can be omitted.)')}
+        
         ${chalk.green('[optional] ')}${chalk.cyan('  --clear, -c')}\t\t\t deletes the existing access token and repo details if any.
         
         ${chalk.green('[optional] ')}${chalk.cyan('  --clear-token, -ct')}\t\t\t deletes the existing access token if any.
