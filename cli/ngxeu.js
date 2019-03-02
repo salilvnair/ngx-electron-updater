@@ -48,6 +48,10 @@
       require('./cmds/fuse')(args)
       break
 
+      case 'install':
+      require('./cmds/install')(args)
+      break
+      
       case 'test':
       require('./cmds/test')(args)
       break 

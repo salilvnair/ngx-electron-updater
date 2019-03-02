@@ -28,6 +28,10 @@ export class ElectronAppUtil {
         this._remote().app.exit(0);
     }
 
+    reload() {
+        this._remote().webContents.getFocusedWebContents().reload();
+    }
+
     env() {
         return this._process().env;
     }
@@ -44,7 +48,11 @@ export class ElectronAppUtil {
     }
 
     npmVersion() {
-        return this.env().npm_package_version;
+        let jsonFile = this.electronService.remote.require('jsonfile');
+        let path = this.electronService.remote.require('path');
+        let packageJsonPath = path.resolve(this.appPath(),"package.json");
+        let packageJson = jsonFile.readFileSync(packageJsonPath);
+        return packageJson.version;
     }
 
     localAppDataPath() {

@@ -11,6 +11,8 @@ const menus = {
     
         ${chalk.cyan('init')}\t\tInitializes github release related meta data
 
+        ${chalk.cyan('install')}\t\tInstalls all the ngxeu core and notifier related npm packages in an fused app.  
+
         ${chalk.cyan('fuse')}\t\tCreates a fusion between angular and electron app.  
 
         ${chalk.cyan('build')}\t\tBuilds the electron app into windows/mac distributables.        
@@ -41,6 +43,17 @@ const menus = {
         ${chalk.green('[optional] ')}${chalk.cyan('  --clear-repodetails, -cr')}
          deletes the existing repo details if any..
         
+        `,      
+
+//----------------------------------------------------------------//
+//----------------------------------------------------------------//
+    install: `
+    usage: ngxeu ${chalk.cyan('install')} 
+
+    options:
+        ${chalk.green('[optional] ')}${chalk.cyan('  --skip-mat, -l')}
+        skip installation of angular material library.
+                
         `,      
 
 //----------------------------------------------------------------//  

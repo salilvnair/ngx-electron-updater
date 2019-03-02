@@ -1,4 +1,4 @@
-import { ReleaseInfo, Provider } from "@ngxeu/core";
+import { ReleaseInfo, Provider } from "projects/core/src/public_api";
 
 
 export class AppUpdaterConfig {

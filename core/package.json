@@ -1,6 +1,6 @@
 {
   "name": "ngeu",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "main.js",
   "scripts": {
     "ng": "ng",
@@ -24,8 +24,8 @@
     "@angular/platform-browser": "~7.0.0",
     "@angular/platform-browser-dynamic": "~7.0.0",
     "@angular/router": "~7.0.0",
-    "@ngxeu/core": "0.0.2",
-    "@ngxeu/notifier": "0.0.2",
+    "@ngxeu/core": "0.0.4",
+    "@ngxeu/notifier": "0.0.3",
     "@ngxeu/util": "^4.0.1",
     "core-js": "^2.5.4",
     "follow-redirects": "^1.6.1",

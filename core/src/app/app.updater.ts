@@ -1,6 +1,6 @@
 
 import { AppUpdaterConfig } from "./app-updater.model";
-import { NgxElectronUpdater } from "@ngxeu/core";
+import { NgxElectronUpdater } from "projects/core/src/public_api";
 export class AppUpdater extends NgxElectronUpdater<AppUpdaterConfig>{
     entityInstance(): AppUpdaterConfig {
         return new AppUpdaterConfig();

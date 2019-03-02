@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
 import { ElectronService } from "ngx-electron";
-import { Subject } from "rxjs";
+import { Subject, BehaviorSubject } from "rxjs";
 import { GithubReleaseResponseType, GithubReleaseAsset } from "../model/github-release.model";
 import { ReleaseInfoType } from "../../type/release-info.type";
 import { HttpClient } from "@angular/common/http";
 import { AppReleaseInfo } from "../model/app-release.model";
+import { ReleaseResponseType } from "../../type/release-response.type";
 
 @Injectable({
     providedIn: 'root'
@@ -42,6 +43,21 @@ export class GitHubReleaseUtil {
             this.githubLatestReleaseInfo.next(response);
         });
         return this.githubLatestReleaseInfo.asObservable();
+    }
+
+    hasReleaseInfo(url:string) {
+        let hasReleaseInfo:Subject<ReleaseResponseType> = new Subject<ReleaseResponseType>();
+        this.httpClient.get(url,{observe:'response'}).subscribe(response=>{    
+            if(response.status==200){
+                hasReleaseInfo.next(ReleaseResponseType.available);
+            }
+            else{
+                hasReleaseInfo.next(ReleaseResponseType.not_available);
+            }
+        },error=>{
+            hasReleaseInfo.next(ReleaseResponseType.doesnot_exist);
+        });
+        return hasReleaseInfo.asObservable();
     }
 
     getLatestReleaseInfo(url:string) {

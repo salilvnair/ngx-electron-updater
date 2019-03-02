@@ -14,6 +14,7 @@ import { DefaultDownloadInfo, Path } from "./type/ngxeu.types";
 import { ElectronService } from "ngx-electron";
 import { FsCommonUtil } from "./util/fs-common.util";
 import { DownloadNotifierValueType } from "./type/download-notifier-value.type";
+import { ReleaseResponseType } from "./type/release-response.type";
 
 @Injectable({
     providedIn: 'root'
@@ -90,6 +91,14 @@ export abstract class NgxElectronUpdater<T> {
         this.install();
     }
 
+    public restart() {
+        this._electronAppUtil.restart();
+    }
+
+    public reload() {
+        this._electronAppUtil.reload();
+    }
+
     private _updateInstallationProgress(installNotifierSubject:Subject<DownloadNotifierType>,percentage:string){
         let downloadNotifier:DownloadNotifierType;
         downloadNotifier = new DownloadNotifierType();
@@ -104,17 +113,35 @@ export abstract class NgxElectronUpdater<T> {
         let updateStatus:Subject<AppUpadateStatus> = new Subject<AppUpadateStatus>();
         let releaseInfo:ReleaseInfoType = this._getReleaseInfo();
         let url = GitHubReleaseUtil.getLatestReleaseUrl(releaseInfo);
-        this._gitHubReleaseUtil.getLatestReleaseInfo(url).subscribe(appReleaseInfo=>{
-            let appUpadateStatus:AppUpadateStatus = new AppUpadateStatus();
-            appUpadateStatus.appReleaseInfo = appReleaseInfo;
-            appUpadateStatus.currentAppVersion = this._electronAppUtil.npmVersion();
-            if(appReleaseInfo.version != appUpadateStatus.currentAppVersion){
-                appUpadateStatus.updateAvailable = true;
+        this._gitHubReleaseUtil.hasReleaseInfo(url).subscribe(hasReleaseInfo=>{
+            if(hasReleaseInfo===ReleaseResponseType.available){
+                this._gitHubReleaseUtil.getLatestReleaseInfo(url).subscribe(appReleaseInfo=>{
+                    let appUpadateStatus:AppUpadateStatus = new AppUpadateStatus();
+                    appUpadateStatus.appReleaseInfo = appReleaseInfo;
+                    appUpadateStatus.currentAppVersion = this._electronAppUtil.npmVersion();
+                    if(appReleaseInfo.version != appUpadateStatus.currentAppVersion
+                        && appReleaseInfo.version > appUpadateStatus.currentAppVersion){
+                        appUpadateStatus.updateAvailable = true;
+                        updateStatus.next(appUpadateStatus);
+                        updateStatus.complete();
+                    }
+                    else{
+                        appUpadateStatus.updateAvailable = false;
+                        updateStatus.next(appUpadateStatus);
+                        updateStatus.complete();
+                    }
+                });
+            }
+            else if(hasReleaseInfo===ReleaseResponseType.not_available){
+                let appUpadateStatus:AppUpadateStatus = new AppUpadateStatus();
+                appUpadateStatus.updateAvailable = false;
                 updateStatus.next(appUpadateStatus);
                 updateStatus.complete();
             }
-            else{
+            else if(hasReleaseInfo===ReleaseResponseType.doesnot_exist){
+                let appUpadateStatus:AppUpadateStatus = new AppUpadateStatus();
                 appUpadateStatus.updateAvailable = false;
+                appUpadateStatus.noInfo = true;
                 updateStatus.next(appUpadateStatus);
                 updateStatus.complete();
             }

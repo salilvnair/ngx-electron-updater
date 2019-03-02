@@ -94,7 +94,7 @@ export class NgxElectronInstallerUtil {
              source = path.resolve(currentDir, DefaultDownloadInfo.newUpdateBuildPath);
              destination = path.resolve(currentDir, DefaultDownloadInfo.buildPath);
              let packageJsonPath = path.resolve(currentDir, DefaultDownloadInfo.appPath,"package.json");
-             //this._updatePackageJsonVersion(packageJsonPath,options);  
+             this._updatePackageJsonVersion(packageJsonPath,options);  
         }
         else {
             source = path.resolve(currentDir, DefaultDownloadInfo.newUpdateAppPath);
