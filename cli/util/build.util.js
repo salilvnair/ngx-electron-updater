@@ -10,6 +10,7 @@ const path = require('path');
 require('./date.util');
 const figlet = require('figlet');
 const clear = require('clear');
+const rimraf = require('rimraf');
 const fsExtra = require("fs-extra");
 
 module.exports =  {
@@ -89,11 +90,13 @@ module.exports =  {
 
     },
     modifyPackageJson: (args, appName, buildCmd) =>{
-        let packageJson = jsonfile.readFileSync('./package.json');
         let updateType;
         if(args.type||args.t){
             updateType = args.type||args.t;
         }
+        upgradePackageVersion(args,appName);
+        let packageJson = jsonfile.readFileSync('./package.json');
+        modifyAppNamePlaceHolderIfAny(args,appName,packageJson,buildCmd);
         if(updateType==='electron'||updateType==='e'){
             modifyAngularJsonForElectronBuild(args,appName,packageJson,buildCmd);           
         }
@@ -101,7 +104,7 @@ module.exports =  {
            //need to modify current angular.json
            //with ngxeu["ng-build"]
            modifyAngularJsonForNgBuild(args,appName,packageJson,buildCmd);
-        }
+        }        
     },
 
     prepareAngularBuildCmd: (args) => {
@@ -207,6 +210,27 @@ function injectNgxeuBuildScript(packageJson, buildCmd,packagePath) {
     jsonfile.writeFileSync(packJsonFile,packageJson,{spaces: 2, EOL: '\r\n'});
 }
 
+function modifyAppNamePlaceHolderIfAny(args,appName,packageJson,buildCmd){
+    let appNamePlaceHolder = "<APP_NAME_STAGING>";
+    let appNameVersionValue = appName+"-staging";
+    if(packageJson.ngxeu){
+        if(packageJson.ngxeu.app){
+            packageJson.ngxeu.app.rootPath = packageJson.ngxeu.app.rootPath.replace(appNamePlaceHolder,appNameVersionValue);
+        }
+        if(packageJson.ngxeu["app-build"]){
+            packageJson.ngxeu["app-build"].outputPath = packageJson.ngxeu["app-build"].outputPath.replace(appNamePlaceHolder,appNameVersionValue);
+            packageJson.ngxeu["app-build"].packPath = packageJson.ngxeu["app-build"].packPath.replace(appNamePlaceHolder,appNameVersionValue);            
+        }
+        if(packageJson.ngxeu["ng-build"]){
+            packageJson.ngxeu["ng-build"].outputPath = packageJson.ngxeu["ng-build"].outputPath.replace(appNamePlaceHolder,appNameVersionValue);
+            packageJson.ngxeu["ng-build"].packPath = packageJson.ngxeu["ng-build"].packPath.replace(appNamePlaceHolder,appNameVersionValue);
+            packageJson.ngxeu["ng-build"].archivePath = packageJson.ngxeu["ng-build"].archivePath.replace(appNamePlaceHolder,appNameVersionValue);
+        }
+        jsonfile.writeFileSync('./package.json',packageJson,{spaces: 2, EOL: '\r\n'});
+    }
+
+}
+
 function modifyAngularJsonForNgBuild(args,appName,packageJson,buildCmd) {
     if(!fs.existsSync('./angular.json') && !fs.existsSync('./.angular-cli.json')){
         console.log(chalk.underline.red.bold('\nAngular json file is missing, make sure its an Angular application!'));
@@ -301,13 +325,14 @@ function ngxeuIncludeData(){
 
 async function archiveAngularBuild(appName){
     let packageJson = jsonfile.readFileSync('./package.json');
-    let srcFolder = getAngularBuildFolder(appName,packageJson);
+    let srcFolder = getAngularArchiveSourcePathFolder(appName,packageJson);
     let zipRelativePath = getAngularPackFolder(appName,packageJson);
     await archive(srcFolder,zipRelativePath);
+    rimraf.sync(srcFolder);
 }
 
-function getAngularBuildFolder(appName,packageJson) {
-    return getNgxeu(appName,packageJson)["ng-build"].outputPath;
+function getAngularArchiveSourcePathFolder(appName,packageJson) {
+    return getNgxeu(appName,packageJson)["ng-build"].archivePath;
 }
 
 function getAngularPackFolder(appName,packageJson) {
@@ -372,32 +397,39 @@ function forceCreateDirIfNotExist(dir) {
     }
 }
 
-function ngxeuBuild(args,appName,pkgJsonFilePath,cont) {
-    let pkgJsonFileName = "/package.json";
+function upgradePackageVersion(args,appName){
     let tempPath = shellJs.pwd();
-    let packageJsonFile = pkgJsonFilePath+pkgJsonFileName
-    if(!cont) {
-        clear();
-        let figi = 'Building '+ appName;
-        console.log(
-            chalk.red(figlet.textSync(figi, { font:'Doom'}))
-        );
-        if(args.pack||args.p){
-            let version = args.pack||args.p;
-            let packageJson = jsonfile.readFileSync(packageJsonFile);
-            packageJson.version = version;
-            console.log(chalk.green('\nBuild app using the version ' +chalk.cyan(version)+'.'));
-            jsonfile.writeFileSync(packageJsonFile,packageJson,{spaces: 2, EOL: '\r\n'});  
-        }
-        else{
-            if(args.bump||args.b){
-                let bumpVal = args.bump||args.b;
-                console.log(chalk.green('\nBumping the version...'));
-                let updateVersionCmd = "npm version "+bumpVal;
-                shellJs.exec(updateVersionCmd);
+    clear();
+    let packageJsonFile = "./package.json";
+    let figi = 'Building '+ appName;
+    console.log("\n\n");
+    console.log(chalk.red(figlet.textSync(figi, { font:'Doom'})));
+    console.log(
+        chalk.green("\n\nUpgrading package version.....")
+    );
+    if(args.pack||args.p){
+        let version = args.pack||args.p;
+        let packageJson = jsonfile.readFileSync(packageJsonFile);
+        packageJson.version = version;
+        console.log(chalk.green('\nBuild app using the version ' +chalk.cyan(version)+'.'));
+        jsonfile.writeFileSync(packageJsonFile,packageJson,{spaces: 2, EOL: '\r\n'});  
+    }
+    else{
+        if(args.bump||args.b){
+            let bumpVal = args.bump||args.b;
+            if(bumpVal===true){
+                bumpVal = "patch";
             }
+            console.log(chalk.green('\nBumping the version...'));
+            let updateVersionCmd = "npm version "+bumpVal;
+            shellJs.exec(updateVersionCmd);
         }
     }
+    shellJs.cd(tempPath);
+}
+
+function ngxeuBuild(args,appName,pkgJsonFilePath,cont) {
+    let tempPath = shellJs.pwd();
     if(!cont) {
         console.log(chalk.green('\nBuilding... ' +chalk.cyan(appName)+'.'));
     }
@@ -443,9 +475,11 @@ function installElectronApp (newElectronRootPath) {
     let tempPath = shellJs.pwd();
     shellJs.cd(newElectronRootPath);
     shellJs.rm('-rf', './node_modules');    
-    let electronBuildInstallCmd = 'npm install';
+    let intallationCmd = "npm install";
+    shellJs.exec(intallationCmd);
     console.log(chalk.yellow('\nInstalling '+chalk.cyan('electron')+' ,'+chalk.cyan('electron builder')+' and other app dependencies.'));
-    shellJs.exec(electronBuildInstallCmd);
+    intallationCmd = "npm install @ngxeu/util ngx-electron follow-redirects fs-extra jsonfile unzipper";
+    shellJs.exec(intallationCmd);
     shellJs.cd(tempPath);
 }
 

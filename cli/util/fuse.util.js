@@ -102,18 +102,22 @@ function setInfoInPackageJson(args,rootDir) {
     let ngxeu = {
         app:{
             dependencies:{
-                "nedb": "^1.8.0"
+                "nedb": "^1.8.0",
+                "jsonfile": "^5.0.0",
+                "fs-extra":"^7.0.1",
+                "@ngxeu/util":"^4.0.2"
             },
             devDependencies: electronDevDependencies,
-            rootPath:"../ngxeu/electron"
+            rootPath:"../<APP_NAME_STAGING>/electron"
         },
         "app-build":{
-            outputPath:"../ngxeu/electron/build",
-            packPath:"../ngxeu/electron/dist"
+            outputPath:"../<APP_NAME_STAGING>/electron/build",
+            packPath:"../<APP_NAME_STAGING>/electron/dist"
         },
         "ng-build":{
-            outputPath:"../ngxeu/angular/build",
-            packPath:"../ngxeu/angular/dist"
+            outputPath:"../<APP_NAME_STAGING>/angular/build/resources/app/build",
+            archivePath:"../<APP_NAME_STAGING>/angular/build",
+            packPath:"../<APP_NAME_STAGING>/angular/dist"
         }
     }
     packageJson.ngxeu = ngxeu;

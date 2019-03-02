@@ -67,13 +67,13 @@ const menus = {
          type of build which will be performed, valid options are  ${chalk.blue('(angular|ng, electron|e)')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --bump, -b')}
-         used to bump the version of the app .(${chalk.green('defaulted to '+chalk.red('npm version major'))})   \n\t valid options are  ${chalk.blue('(major|minor|patch)')}
+         used to bump the version of the app .(${chalk.green('defaulted to '+chalk.red('npm version patch'))})   \n\t valid options are  ${chalk.blue('(major|minor|patch)')}
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --skip-ng')}
          skip angular build if already done once,\n\t usually used when a new logo is placed in the build directory.
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --pack, -p')}
-         package the app using electron-builder and if pack version is specified \n\t then it will be used to build the app.
+         package the app after building and if pack version is specified \n\t then it will be used to build the app.
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --icon, -i')}
          specify the location of icon file ${chalk.bold.underline.red('(name should be one of icon.png, icon.ico, icon.icns)')}
