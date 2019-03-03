@@ -55,6 +55,11 @@ module.exports =  {
         }
         jsonfile.writeFileSync(appReleaseInfoPath,releaseInfo,{spaces: 2, EOL: '\r\n'});  
         console.log(chalk.green('\nRelease info for ' +chalk.cyan(appNameZipWithVersion)+' created successfully!!')); 
+        // //added to revert package.json and angular.json changes to whatever it was earlier
+        // console.log(chalk.green('\nCleaning working git directory ...'));
+        // let execCmd = 'git checkout -- .'
+        // shellJs.exec(execCmd);
+        // console.log(chalk.green('\nCleaning working git directory of current app ' +chalk.cyan(appName)+' done successfully!!')); 
     },
     
     installElectronBuilderPromt: async (appName) => {
@@ -480,7 +485,7 @@ function installElectronApp (newElectronRootPath) {
     let intallationCmd = "npm install";
     shellJs.exec(intallationCmd);
     console.log(chalk.yellow('\nInstalling '+chalk.cyan('electron')+' ,'+chalk.cyan('electron builder')+' and other app dependencies.'));
-    intallationCmd = "npm install @ngxeu/util follow-redirects fs-extra jsonfile unzipper";
+    intallationCmd = "npm install @ngxeu/util follow-redirects fs-extra jsonfile unzipper semvar";
     shellJs.exec(intallationCmd);
     shellJs.cd(tempPath);
 }

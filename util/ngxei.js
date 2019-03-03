@@ -2,15 +2,17 @@ let fs = require('fs');
 let path = require('path');
 let unzipper = require('unzipper');
 var util = require('util');
-var EventEmitter = require('events').EventEmitter;
+var eventEmitter = require('events').EventEmitter;
 let http = require("follow-redirects").http;
 let https = require('follow-redirects').https;
-
+var semver = require('semver');
 function NgxElectronUpdaterUtil () {
     if (!(this instanceof NgxElectronUpdaterUtil)) return new NgxElectronUpdaterUtil()
 }
 
-util.inherits(NgxElectronUpdaterUtil, EventEmitter);
+util.inherits(NgxElectronUpdaterUtil, eventEmitter);
+
+util.inherits(NgxElectronUpdaterUtil,semver);
 
 NgxElectronUpdaterUtil.prototype.setOptions = function(opts){
     this.opts = opts;
@@ -32,6 +34,7 @@ NgxElectronUpdaterUtil.prototype.createPathIfNotExist = function(directoryPath) 
 NgxElectronUpdaterUtil.prototype.download = function(url, downloadPath,fileName) {
   _download(url, downloadPath,fileName,this);
 }
+
 
 function _extract(options,installer){ 
   let ZIP_FILE_PATH =options.zip_file_path;

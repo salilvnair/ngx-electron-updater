@@ -33,6 +33,11 @@ export class NgxElectronInstallerUtil {
         this._clean(options,appDownloadPath);
     }
 
+    ngxeuUtil():NgxElectronUpdaterUtil {
+        let ngxeuUtil:NgxElectronUpdaterUtil = this._electronService.remote.require('@ngxeu/util');
+        return ngxeuUtil;
+    }
+
     private _clean(options:NgxeiOption,appDownloadPath:string) {
         let fsExtra = this._electronService.remote.require('fs-extra');
         fsExtra.removeSync(appDownloadPath);

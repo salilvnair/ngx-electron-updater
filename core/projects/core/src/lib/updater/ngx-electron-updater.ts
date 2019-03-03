@@ -118,9 +118,8 @@ export abstract class NgxElectronUpdater<T> {
                 this._gitHubReleaseUtil.getLatestReleaseInfo(url).subscribe(appReleaseInfo=>{
                     let appUpadateStatus:AppUpadateStatus = new AppUpadateStatus();
                     appUpadateStatus.appReleaseInfo = appReleaseInfo;
-                    appUpadateStatus.currentAppVersion = this._electronAppUtil.npmVersion();
-                    if(appReleaseInfo.version != appUpadateStatus.currentAppVersion
-                        && appReleaseInfo.version > appUpadateStatus.currentAppVersion){
+                    appUpadateStatus.currentAppVersion = this._electronAppUtil.npmVersion();                
+                    if(this._ngxElectronInstallerUtil.ngxeuUtil().gt(appReleaseInfo.version,appUpadateStatus.currentAppVersion)){
                         appUpadateStatus.updateAvailable = true;
                         updateStatus.next(appUpadateStatus);
                         updateStatus.complete();
