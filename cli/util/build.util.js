@@ -485,7 +485,7 @@ function installElectronApp (newElectronRootPath) {
     let intallationCmd = "npm install";
     shellJs.exec(intallationCmd);
     console.log(chalk.yellow('\nInstalling '+chalk.cyan('electron')+' ,'+chalk.cyan('electron builder')+' and other app dependencies.'));
-    intallationCmd = "npm install @ngxeu/util follow-redirects fs-extra jsonfile unzipper semvar";
+    intallationCmd = "npm install @ngxeu/util follow-redirects fs-extra jsonfile unzipper semver";
     shellJs.exec(intallationCmd);
     shellJs.cd(tempPath);
 }
