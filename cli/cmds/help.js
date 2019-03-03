@@ -73,7 +73,7 @@ const menus = {
          skip angular build if already done once,\n\t usually used when a new logo is placed in the build directory.
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --pack, -p')}
-         package the app after building and if pack version is specified \n\t then it will be used to build the app.
+         package the app after building and if pack version is specified \n\t then it will be used to build the app else the current package.json version will be used.
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --icon, -i')}
          specify the location of icon file ${chalk.bold.underline.red('(name should be one of icon.png, icon.ico, icon.icns)')}

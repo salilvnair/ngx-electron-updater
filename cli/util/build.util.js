@@ -404,15 +404,17 @@ function upgradePackageVersion(args,appName){
     let figi = 'Building '+ appName;
     console.log("\n\n");
     console.log(chalk.red(figlet.textSync(figi, { font:'Doom'})));
-    console.log(
-        chalk.green("\n\nUpgrading package version.....")
-    );
     if(args.pack||args.p){
         let version = args.pack||args.p;
         let packageJson = jsonfile.readFileSync(packageJsonFile);
-        packageJson.version = version;
-        console.log(chalk.green('\nBuild app using the version ' +chalk.cyan(version)+'.'));
-        jsonfile.writeFileSync(packageJsonFile,packageJson,{spaces: 2, EOL: '\r\n'});  
+        if(!version){
+            packageJson.version = version;
+            console.log(chalk.green('\nBuild app using the version ' +chalk.cyan(packageJson.version)+'.'));
+            jsonfile.writeFileSync(packageJsonFile,packageJson,{spaces: 2, EOL: '\r\n'}); 
+        }
+        else{
+            console.log(chalk.green('\nBuild app using the version ' +chalk.cyan(packageJson.version)+'.')); 
+        } 
     }
     else{
         if(args.bump||args.b){
