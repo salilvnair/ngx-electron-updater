@@ -12,7 +12,30 @@ function NgxElectronUpdaterUtil () {
 
 util.inherits(NgxElectronUpdaterUtil, eventEmitter);
 
-util.inherits(NgxElectronUpdaterUtil,semver);
+NgxElectronUpdaterUtil.prototype.gt = function(v1,v2){
+  return semver.gt(v1,v2);
+}
+
+NgxElectronUpdaterUtil.prototype.gte = function(v1,v2){
+  return semver.gte(v1,v2);
+}
+
+NgxElectronUpdaterUtil.prototype.lt = function(v1,v2){
+  return semver.lt(v1,v2);
+}
+
+NgxElectronUpdaterUtil.prototype.lte = function(v1,v2){
+  return semver.lte(v1,v2);
+}
+
+NgxElectronUpdaterUtil.prototype.eq = function(v1,v2){
+  return semver.eq(v1,v2);
+}
+
+NgxElectronUpdaterUtil.prototype.neq = function(v1,v2){
+  return semver.neq(v1,v2);
+}
+
 
 NgxElectronUpdaterUtil.prototype.setOptions = function(opts){
     this.opts = opts;
