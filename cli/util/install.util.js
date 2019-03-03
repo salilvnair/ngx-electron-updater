@@ -33,9 +33,9 @@ function processAdvancedInstallation(args){
     console.log(
         chalk.green("Installing @ngxeu/core  and its dependencies")
     );
-    let intallationCmd = "npm install @ngxeu/core";
+    let intallationCmd = "npm install ngx-electron @ngxeu/core";
     shellJs.exec(intallationCmd);
-    intallationCmd = "npm install @ngxeu/util ngx-electron follow-redirects fs-extra jsonfile unzipper";
+    intallationCmd = "npm install --save-dev @ngxeu/util follow-redirects fs-extra jsonfile unzipper";
     shellJs.exec(intallationCmd);
     console.log(
         chalk.green("\n Installing @ngxeu/notifier and its dependencies")
