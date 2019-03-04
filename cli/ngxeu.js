@@ -33,7 +33,7 @@
       break
 
       case 'publish':
-        require('./cmds/publish')(args,false)
+        require('./cmds/publish')(args)
       break     
 
       case 'show':

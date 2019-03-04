@@ -5,7 +5,8 @@ const fs = require('fs');
 const jsonFile = require('jsonfile');
 const figlet = require('figlet');
 const clear = require('clear');
-module.exports = async (args, draft) => {
+const shellJs = require('shelljs');
+module.exports = async (args) => {
     try {
         let files;
         let tag;
@@ -41,44 +42,83 @@ module.exports = async (args, draft) => {
             console.log(chalk.red('\nError:Tag name is not specified to be deleted, please specify using command:')+' ngxeu publish MyApp'+chalk.cyan(' -d -t v1.0.0'));
             process.exit();
            }
-        }
+        }      
+        let target, notes,draft,prerelease;  
+        draft = false;
+        prerelease = false;
+        let defaultOptions = getDefaultOptionsFromAppReleaseInfo(args,appName);
+        tag = defaultOptions.tag;
+        draft = defaultOptions.draft;
+        prerelease = defaultOptions.prerelease;
+        files = defaultOptions.files;
+
         if(args.f || args.files) {
             let fileArgs = args.f || args.files;
             files = [];
             files = fileArgs.split(",");
             //console.log(files);
         }
-        else{
+        else if(!files){
             console.log(chalk.red('\nError:file(s) path not mentioned please pass using command:')+' ngxeu publish MyApp'+chalk.cyan(' -f ./test.zip'));
             process.exit();
         }
         if(args.tag|| args.t) {
             tag = args.tag || args.t;
         }
-        else{
+        else if(!tag){
             console.log(chalk.red('\nError:release/draft tag name is not mentioned please pass using command:')+' ngxeu publish MyApp'+chalk.cyan(' -t v1.0.0'));
             process.exit();
         }
-        draft = true;
+
         if(args.release) {
             draft = false;
         }
-        let target, notes;
-
+        if(args.prerelease) {
+            prerelease = true;
+        }
+        
         if(args.target) {
             target = args.target;
         }
         if(args.notes) {
             notes = args.notes;
-        }
-        processPublish(releases,tag, target, notes, files, draft,appName);
+        }        
+        processPublish(releases,tag, target, notes, files, draft,prerelease,appName);
         
     } catch (err) {
       console.error(err)
     }
   }
 
-  function processPublish(releases,tag, target, notes, files, draft,appName){
+  function getDefaultOptionsFromAppReleaseInfo(args,appName){
+    let defaultOptions = {};    
+    let appReleaseInfo = jsonFile.readFileSync('./app-release.json');
+    let version = appReleaseInfo.version;
+    if(!args.f || !args.files){
+        let defaultFileName = appName+"-"+version;
+        if(process.platform==='darwin'){
+            defaultFileName = defaultFileName +"-"+"mac.zip"
+        }
+        else if(process.platform==='win32'){
+            defaultFileName = defaultFileName +"-"+"win.zip"
+        }
+        files = [];
+        files.push(defaultFileName);
+        defaultOptions.files = files;
+    }
+    defaultOptions.tag = "v"+version;
+    if(version && (version.indexOf("rc")>-1||version.indexOf("alpha")>-1||version.indexOf("beta")>-1)){
+        defaultOptions.prerelease = true;
+        defaultOptions.draft=false;
+    }
+    else{
+        defaultOptions.draft=false;
+        defaultOptions.prerelease = false;
+    }
+    return defaultOptions;
+  }
+
+  function processPublish(releases,tag, target, notes, files, draft,prerelease,appName){
         let accessToken = github.getStoredGithubToken(appName);        
         if(!accessToken) {
            console.log(chalk.red('\nError:access token not found please set one using command: ')+chalk.cyan('ngxeu init '+appName));
@@ -109,7 +149,7 @@ module.exports = async (args, draft) => {
         console.log(
             chalk.red(figlet.textSync(figi, { font:'Doom'}))
         );   
-        ghRelease.uploadAsset(accessToken,repoDetails.user,repoDetails.repo,name,tag,target,notes,files,draft);
+        ghRelease.uploadAsset(accessToken,repoDetails.user,repoDetails.repo,name,tag,target,notes,files,draft,prerelease);
   }
 
   async function getAllReleases(appName) {

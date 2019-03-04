@@ -25,7 +25,7 @@ module.exports = {
         }
     },
 
-    uploadAsset:(ghToken,owner, repo,name, tag, target, notes, files, draft) => {
+    uploadAsset:(ghToken,owner, repo,name, tag, target, notes, files, draft,prerelease) => {
         let options = {};
         options.tag = tag;
         options.owner = owner;
@@ -36,7 +36,7 @@ module.exports = {
         options.assets = files;
         options.token = ghToken;
         options.notes = notes||'';
-        options.prerelease = false;
+        options.prerelease = prerelease;
         let githubPublishUtil = GithubPublishUtil(options,function(err, release){
             if (err) throw err
             var newLineToken = "";
