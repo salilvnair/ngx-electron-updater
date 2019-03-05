@@ -121,11 +121,13 @@ const menus = {
     
 
     options:
-        ${chalk.red('[mandatory]')}${chalk.cyan(' --tag,  -t ')}
+        ${chalk.green('[optional]')}${chalk.cyan(' --tag,  -t ')}
          release/draft tag version 
+         ${chalk.yellow('(will be defaulted  to version from app-release.json if not given)')} 
         
-        ${chalk.red('[mandatory]')}${chalk.cyan(' --files, -f ')}
+        ${chalk.green('[optional]')}${chalk.cyan(' --files, -f ')}
          file(s) to be uploaded, should be the relative path of the files
+         ${chalk.yellow('(will be defaulted to file from app-release.json if not given)')} 
 
         ${chalk.green('[optional] ')}${chalk.cyan(' --draft')}
          upload assets as draft version ${chalk.green('(default)')} 
