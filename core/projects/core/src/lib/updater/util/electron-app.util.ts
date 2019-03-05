@@ -56,11 +56,13 @@ export class ElectronAppUtil {
     }
 
     localAppDataPath() {
-        return this.env().LOCALAPPDATA;
+        let localAppDataPath =process.platform == 'darwin' ? process.env.HOME+ '/Library/Application Support':this.env().LOCALAPPDATA;
+        return localAppDataPath;
     }
 
     appDataPath() {
-        return this.env().APPDATA;
+        let appDataPath =process.platform == 'darwin' ? process.env.HOME+ '/Library/Application Support':this.env().APPDATA;
+        return appDataPath;
     }
 
     isWindows() {
