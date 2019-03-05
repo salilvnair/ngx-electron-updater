@@ -406,9 +406,20 @@ function upgradePackageVersion(args,appName){
     let tempPath = shellJs.pwd();
     clear();
     let packageJsonFile = "./package.json";
+    let updateType;
+    let buildType;
+    if(args.type||args.t){
+        updateType = args.type||args.t;
+    }
+    if(updateType==="ng"||updateType==="angular"){
+        buildType="build";
+    }
+    else{
+        buildType="app";
+    }
     let figi = 'Building '+ appName;
-    console.log("\n\n");
-    console.log(chalk.red(figlet.textSync(figi, { font:'Doom'})));
+    console.log(`${chalk.red(figlet.textSync(figi, { font:'Doom'}))}\n${chalk.yellow.bold('Type :')} ${chalk.blue.bold(buildType)}
+            `);
     if(args.pack||args.p){
         let version = args.pack||args.p;
         let packageJson = jsonfile.readFileSync(packageJsonFile);

@@ -17,8 +17,9 @@
     "ngx-electron"
   ],
   "dependencies": {
+    "adm-zip": "^0.4.13",
+    "follow-redirects": "^1.7.0",
     "semver": "^5.6.0",
-    "follow-redirects":"^1.7.0",
     "unzipper": "^0.9.10"
   },
   "author": "Salil V Nair",
