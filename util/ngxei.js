@@ -6,6 +6,7 @@ var eventEmitter = require('events').EventEmitter;
 let http = require("follow-redirects").http;
 let https = require('follow-redirects').https;
 var semver = require('semver');
+var AdmZip = require('adm-zip');
 function NgxElectronUpdaterUtil () {
     if (!(this instanceof NgxElectronUpdaterUtil)) return new NgxElectronUpdaterUtil()
 }
@@ -86,10 +87,14 @@ function _extract(options,installer){
     replacePath=resourcePath;
     lookupPath= resourcePath+appPath;
   }
-
+  var zip = new AdmZip(ZIP_FILE_PATH);
+  var zipEntries = zip.getEntries(); 
+  let zipEntryCounter = zipEntries.length;
+  let entryCounter = 0;
   fs.createReadStream(ZIP_FILE_PATH)
     .pipe(unzipper.Parse())
     .on("entry", (entry) =>{
+      entryCounter++;
       var fileName = entry.path;
       var type = entry.type; // 'Directory' or 'File'
       if (fileName.indexOf(lookupPath) > -1) {
@@ -104,10 +109,11 @@ function _extract(options,installer){
       } else {
         entry.autodrain();
       }
+      if(entryCounter===zipEntryCounter){
+        installer.emit('finish');
+      }
     }
-  ).on('finish',()=>{
-    installer.emit('finish');
-  });
+  )
 }
 
 function _forceCreateDir(dir) {
