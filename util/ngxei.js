@@ -62,6 +62,7 @@ NgxElectronUpdaterUtil.prototype.download = function(url, downloadPath,fileName)
 function _extract(options,installer){ 
   let ZIP_FILE_PATH =options.zip_file_path;
   let currentDir = options.app_dir;
+  let appName = options.appName;
   let resourcePath;
   let buildPath='/app/build';
   let appPath="/app";
@@ -70,6 +71,12 @@ function _extract(options,installer){
   let extractPath = options.extract_path||currentDir + "/ngxeu/update" ;
   if(options.os==='win'){
     resourcePath = 'resources';
+  }
+  else if(options.os==='mac'){
+    resourcePath = 'resources';
+    if(options.updateType==='app'){
+      resourcePath=appName+'.app/Contents/Resources';
+    }
   }
   if(options.updateType==='build'){
     replacePath=resourcePath+appPath;
