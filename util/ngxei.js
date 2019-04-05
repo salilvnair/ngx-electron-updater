@@ -127,6 +127,14 @@ function _extract(options,installer){
       installer.emit('finish');
     }
   });
+
+  setTimeout(()=>{
+    //finish forcefully after 15 secs for mac temp fix
+    //permanent fix can be thought in future
+    if(options.os==='mac'){
+      installer.emit('finish');
+    }
+  },15000);
 }
 
 function _forceCreateDir(dir) {
