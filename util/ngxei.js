@@ -42,7 +42,9 @@ NgxElectronUpdaterUtil.prototype.setOptions = function(opts){
     this.opts = opts;
 }
 NgxElectronUpdaterUtil.prototype.extract = function() {
+  console.log("extraction begining");
     var opts = this.opts
+    console.log(opts);
     _extract(opts,this);
     console.log("extraction done");
 }
@@ -87,9 +89,13 @@ function _extract(options,installer){
     replacePath=resourcePath;
     lookupPath= resourcePath+appPath;
   }
-  var zip = new AdmZip(ZIP_FILE_PATH);
-  var zipEntries = zip.getEntries(); 
-  let zipEntryCounter = zipEntries.length;
+  let zipEntryCounter = 0;
+  if(options.os==='win'){
+    var zip = new AdmZip(ZIP_FILE_PATH);
+    var zipEntries = zip.getEntries(); 
+    zipEntryCounter = zipEntries.length;
+  }
+
   let entryCounter = 0;
   fs.createReadStream(ZIP_FILE_PATH)
     .pipe(unzipper.Parse())
@@ -109,11 +115,18 @@ function _extract(options,installer){
       } else {
         entry.autodrain();
       }
-      if(entryCounter===zipEntryCounter){
-        installer.emit('finish');
+      if(options.os==='win'){
+        if(entryCounter===zipEntryCounter){
+          installer.emit('finish');
+        }
       }
     }
   )
+  .on('finish',()=>{
+    if(options.os!='win'){
+      installer.emit('finish');
+    }
+  });
 }
 
 function _forceCreateDir(dir) {
