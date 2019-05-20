@@ -1,11 +1,17 @@
-const { app, BrowserWindow} = require("electron");
-
+const { app, BrowserWindow, Menu} = require("electron");
+let dev;
+const args = process.argv.slice(1);
+dev = args.some(val => val === '--dev');
 ////uncomment below to hide security alert on console
 //process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1";
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let browserWindow;
+
+function sendStatusToWindow(text) {
+  browserWindow.webContents.send(text);
+}
 
 function createWindow() {
 
@@ -22,9 +28,13 @@ function createWindow() {
 
   // toggle between the index.html of the app or localhost:4200.
   //browserWindow.loadURL(`file://${__dirname}/index.html`);
-  browserWindow.loadURL('http://localhost:4200');
+  if(dev){
+    browserWindow.loadURL('http://localhost:4200');
+  }
+  else{
+    browserWindow.loadURL(`file://${__dirname}/build/index.html`);
+  }
 
-  browserWindow.webContents.openDevTools();
   // Emitted when the window is closed.
   browserWindow.on("closed", () => {
     // Dereference the window object, usually you would store windows
@@ -32,6 +42,43 @@ function createWindow() {
     // when you should delete the corresponding element.
     browserWindow = null;
   });
+
+  // Create the Application's main menu
+  var template = [{
+    label: "Application",
+    submenu: [
+        { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
+        { type: "separator" },
+        { label: "Hide", accelerator: "CmdOrCtrl+H", click: function() {
+          if(browserWindow.isMenuBarVisible()){
+            browserWindow.setMenuBarVisibility(false);
+          }
+          else{
+            browserWindow.setMenuBarVisibility(true);
+          }
+         }},
+        { type: "separator" },
+        { label: "Check for Updates", accelerator: "CmdOrCtrl+U", click: function() {
+            sendStatusToWindow('checkForUpdate');
+         }},
+        { type: "separator" },
+        { label: "Quit", accelerator: "CmdOrCtrl+Q", click: function() { app.quit(); }},
+        { type: "separator" },
+        { label: "Developer Mode", accelerator: "CmdOrCtrl+D", click: function() { browserWindow.webContents.openDevTools(); }}
+    ]}, {
+    label: "Edit",
+    submenu: [
+        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+        { label: "Redo", accelerator: "CmdOrCtrl+Y", selector: "redo:" },
+        { type: "separator" },
+        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+        { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+    ]}
+  ];
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
 // This method will be called when Electron has finished

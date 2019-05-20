@@ -91,7 +91,7 @@ function setInfoInPackageJson(args,rootDir) {
     else{
         electronDevDependencies["electron-builder"] =  "^20.38.2";
     }
-    packageJson.scripts["electron"] = "./node_modules/.bin/electron .";   
+    packageJson.scripts["electron"] = "./node_modules/.bin/electron . --dev";   
     if(args.ts){
         packageJson.main = "./dist/main.js";
         packageJson.scripts["build-electron"] = "cd main/core && tsc";
