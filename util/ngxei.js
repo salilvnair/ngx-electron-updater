@@ -8,7 +8,7 @@ let https = require('follow-redirects').https;
 var semver = require('semver');
 var AdmZip = require('adm-zip');
 const crypto = require('crypto');
-const algorithm = 'aes-256-ctr';
+const algorithm = 'aes-128-cbc';
 
 function NgxElectronUpdaterUtil () {
     if (!(this instanceof NgxElectronUpdaterUtil)) return new NgxElectronUpdaterUtil()
