@@ -34,6 +34,12 @@ const menus = {
         ${chalk.green('[optional] ')}${chalk.cyan('  --list, -l')}
          shows the list of stored app tokens and repo details.${chalk.bold.red('(The appName is not mandatory here and can be omitted.)')}
         
+        ${chalk.green('[optional] ')}${chalk.cyan('  --encrypt-token, --et')}
+         encypts the access token which can be used in @ngxeu/core 
+
+        ${chalk.green('[optional] ')}${chalk.cyan('  --decrypt-token, --dt')}
+         encypts the access token which can be used in @ngxeu/core 
+
         ${chalk.green('[optional] ')}${chalk.cyan('  --clear, -c')}
          deletes the existing access token and repo details if any.
         
