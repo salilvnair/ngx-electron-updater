@@ -1,5 +1,6 @@
 const github = require('../util/github-inquirer.util');
 const chalk = require('chalk');
+const ghRelease = require('../util/gh-release.util');
 module.exports = async (args) => {
     try {
         //console.log(args)
@@ -22,6 +23,33 @@ module.exports = async (args) => {
             github.deleteStoredGithubToken(appName);
             github.deleteStoredRepoDetails(appName);
             console.log(chalk.green('cleared access token details!'));
+            process.exit();
+        }
+        if(args['encypt-token']||args.et){
+            console.log(chalk.green('encrypting access token!'));
+            let repoDetails = github.getStoredRepoDetails(appName);
+            let accessToken = github.getStoredGithubToken(appName);
+            if(!accessToken && accessToken!='') {
+                console.log(chalk.red('No access token has been found please set one!'));
+            }
+            else {
+                let encryptedToken = ghRelease.encryptToken(repoDetails.user,repoDetails.repo,accessToken);
+                console.log(chalk.yellow('Encrypted Token: ') + chalk.cyan(encryptedToken));
+            }
+            process.exit();
+        }
+        if(args['decrypt-token']||args.dt){
+            let encryptedToken = args['decrypt-token']||args.dt;
+            console.log(chalk.green('decrypting access token!'));
+            let repoDetails = github.getStoredRepoDetails(appName);
+            let accessToken = github.getStoredGithubToken(appName);
+            if(!accessToken && accessToken!='') {
+                console.log(chalk.red('No access token has been found please set one!'));
+            }
+            else {
+                let decryptedToken = ghRelease.decryptToken(repoDetails.user,repoDetails.repo,encryptedToken);
+                console.log(chalk.yellow('Decrypted Token: ') + chalk.cyan(decryptedToken));
+            }
             process.exit();
         }
         if(args['clear-repodetails']||args.cr){

@@ -46,4 +46,8 @@ export interface NgxElectronUpdaterUtil {
      * v1 != v2 The opposite of eq.
      */
     neq(v1: string , v2: string): boolean;
+
+    encrypt(key:string, value:string): string;
+
+    decrypt(key:string, value:string): string;
 }

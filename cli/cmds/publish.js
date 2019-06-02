@@ -1,6 +1,6 @@
 const github = require('../util/github-inquirer.util');
 const chalk = require('chalk');
-const ghRelease = require('../util/gh-release.util')
+const ghRelease = require('../util/gh-release.util');
 const fs = require('fs');
 const jsonFile = require('jsonfile');
 const figlet = require('figlet');

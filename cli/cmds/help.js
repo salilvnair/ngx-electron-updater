@@ -37,10 +37,10 @@ const menus = {
         ${chalk.green('[optional] ')}${chalk.cyan('  --clear, -c')}
          deletes the existing access token and repo details if any.
         
-        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-token, -ct')}
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-token, --ct')}
          deletes the existing access token if any.
         
-        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-repodetails, -cr')}
+        ${chalk.green('[optional] ')}${chalk.cyan('  --clear-repodetails, --cr')}
          deletes the existing repo details if any..
         
         `,      

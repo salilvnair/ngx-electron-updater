@@ -7,6 +7,9 @@ let http = require("follow-redirects").http;
 let https = require('follow-redirects').https;
 var semver = require('semver');
 var AdmZip = require('adm-zip');
+const crypto = require('crypto');
+const algorithm = 'aes-256-ctr';
+
 function NgxElectronUpdaterUtil () {
     if (!(this instanceof NgxElectronUpdaterUtil)) return new NgxElectronUpdaterUtil()
 }
@@ -59,6 +62,40 @@ NgxElectronUpdaterUtil.prototype.createPathIfNotExist = function(directoryPath) 
 
 NgxElectronUpdaterUtil.prototype.download = function(url, downloadPath,fileName) {
   _download(url, downloadPath,fileName,this);
+}
+
+NgxElectronUpdaterUtil.prototype.encrypt = function(key, value) {
+  return _encrypt(value, key);
+}
+
+NgxElectronUpdaterUtil.prototype.decrypt = function(key, value) {
+  return _decrypt(value, key);
+}
+
+
+function _encrypt(value,key) {
+  if (value == null) {
+    throw new Error('value must not be null or undefined');
+  }
+
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  const encrypted = cipher.update(String(value), 'utf8', 'hex') + cipher.final('hex');
+
+  return iv.toString('hex') + encrypted;
+}
+
+function _decrypt(value,key) {
+  if (value == null) {
+    throw new Error('value must not be null or undefined');
+  }
+
+  const stringValue = String(value);
+  const iv = Buffer.from(stringValue.slice(0, 32), 'hex');
+  const encrypted = stringValue.slice(32);
+
+  const decipher = crypto.createDecipheriv(algorithm, key, iv);
+  return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
 }
 
 

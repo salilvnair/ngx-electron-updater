@@ -1,6 +1,6 @@
 {
   "name": "@ngxeu/util",
-  "version": "4.0.8",
+  "version": "4.0.9",
   "description": "portable angular electron fused app update installer",
   "main": "ngxei.js",
   "scripts": {

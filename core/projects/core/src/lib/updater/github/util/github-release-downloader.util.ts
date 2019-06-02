@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { ElectronService } from "ngx-electron";
-import { Subject, BehaviorSubject } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { Subject } from "rxjs";
 import { GithubReleaseResponseType, GithubReleaseAsset } from "../model/github-release.model";
 import { ReleaseInfoType } from "../../type/release-info.type";
-import { HttpClient } from "@angular/common/http";
 import { AppReleaseInfo } from "../model/app-release.model";
 import { ReleaseResponseType } from "../../type/release-response.type";
+import { NgxElectronInstallerUtil } from "../../ngxei/util/ngx-electron-installer.util";
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +17,9 @@ export class GitHubReleaseUtil {
     public static REPO_PLACEHOLDER = "{repo}";
     private _appReleaseInfoFile = "app-release.json";
     public githubLatestReleaseInfo:Subject<GithubReleaseResponseType>;
-    constructor(private electronService:ElectronService, private httpClient:HttpClient){}
+    constructor(    private ngxElectronInstallerUtil:NgxElectronInstallerUtil,
+                    private httpClient:HttpClient
+                ){}
 
     static getLatestReleaseUrl(releaseInfo:ReleaseInfoType) {
         let latestUrl = GitHubReleaseUtil.API_LATEST_RELEASE_URL;
@@ -37,17 +39,33 @@ export class GitHubReleaseUtil {
         return this.githubLatestReleaseInfo.asObservable();
     }
 
-    getLatestRelease(url:string) {
+    getLatestRelease(url:string, releaseInfo:ReleaseInfoType) {
         this.githubLatestReleaseInfo = new Subject<GithubReleaseResponseType>();
-        this.httpClient.get<GithubReleaseResponseType>(url).subscribe(response=>{       
+        let observer = null;
+        if(releaseInfo.isPrivate) {
+            const tokenSuffix = this.ngxElectronInstallerUtil.decrypt(releaseInfo.user+releaseInfo.repo,releaseInfo.cliEncryptedToken);
+            observer = this.httpClient.get<GithubReleaseResponseType>(url,{headers:{'Authorization':'token '+tokenSuffix}});
+        }
+        else {
+            observer = this.httpClient.get<GithubReleaseResponseType>(url);
+        }  
+        observer.subscribe((response: GithubReleaseResponseType)=>{       
             this.githubLatestReleaseInfo.next(response);
         });
         return this.githubLatestReleaseInfo.asObservable();
     }
 
-    hasReleaseInfo(url:string) {
+    hasReleaseInfo(url:string, releaseInfo:ReleaseInfoType) {
         let hasReleaseInfo:Subject<ReleaseResponseType> = new Subject<ReleaseResponseType>();
-        this.httpClient.get(url,{observe:'response'}).subscribe(response=>{    
+        let observer = null;
+        if(releaseInfo.isPrivate) {
+            const tokenSuffix = this.ngxElectronInstallerUtil.decrypt(releaseInfo.user+releaseInfo.repo,releaseInfo.cliEncryptedToken);
+            observer = this.httpClient.get(url,{headers:{'Authorization':'token '+tokenSuffix},observe:'response'});
+        }
+        else {
+            observer = this.httpClient.get(url,{observe:'response'});
+        }        
+        observer.subscribe((response: any)=>{    
             if(response.status==200){
                 hasReleaseInfo.next(ReleaseResponseType.available);
             }
@@ -60,13 +78,21 @@ export class GitHubReleaseUtil {
         return hasReleaseInfo.asObservable();
     }
 
-    getLatestReleaseInfo(url:string) {
+    getLatestReleaseInfo(url:string, releaseInfo:ReleaseInfoType) {
         let latestReleaseInfo:Subject<AppReleaseInfo> = new Subject<AppReleaseInfo>();
-        this.getLatestRelease(url).subscribe(releaseResponse=>{
+        this.getLatestRelease(url, releaseInfo).subscribe(releaseResponse=>{
             if(releaseResponse && releaseResponse.assets){
                 let releaseAsset:GithubReleaseAsset = releaseResponse.assets.find(asset=>asset.name===this._appReleaseInfoFile);
-                this.httpClient.get<AppReleaseInfo>(releaseAsset.browser_download_url)
-                 .subscribe(data => {
+                let observer = null;
+                if(releaseInfo.isPrivate) {
+                    const tokenSuffix = this.ngxElectronInstallerUtil.decrypt(releaseInfo.user+releaseInfo.repo,releaseInfo.cliEncryptedToken);
+                    observer = this.httpClient.get<AppReleaseInfo>(releaseAsset.browser_download_url,{headers:{'Authorization':'token '+tokenSuffix}});
+                }
+                else {
+                    observer = this.httpClient.get<AppReleaseInfo>(releaseAsset.browser_download_url);
+                }   
+                
+                observer.subscribe((data: AppReleaseInfo) => {
                     latestReleaseInfo.next(data);
                   });
             }

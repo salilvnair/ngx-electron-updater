@@ -113,9 +113,9 @@ export abstract class NgxElectronUpdater<T> {
         let updateStatus:Subject<AppUpadateStatus> = new Subject<AppUpadateStatus>();
         let releaseInfo:ReleaseInfoType = this._getReleaseInfo();
         let url = GitHubReleaseUtil.getLatestReleaseUrl(releaseInfo);
-        this._gitHubReleaseUtil.hasReleaseInfo(url).subscribe(hasReleaseInfo=>{
+        this._gitHubReleaseUtil.hasReleaseInfo(url, releaseInfo).subscribe(hasReleaseInfo=>{
             if(hasReleaseInfo===ReleaseResponseType.available){
-                this._gitHubReleaseUtil.getLatestReleaseInfo(url).subscribe(appReleaseInfo=>{
+                this._gitHubReleaseUtil.getLatestReleaseInfo(url, releaseInfo).subscribe(appReleaseInfo=>{
                     let appUpadateStatus:AppUpadateStatus = new AppUpadateStatus();
                     appUpadateStatus.appReleaseInfo = appReleaseInfo;
                     appUpadateStatus.currentAppVersion = this._electronAppUtil.npmVersion();                
@@ -159,7 +159,7 @@ export abstract class NgxElectronUpdater<T> {
     private _downloadLatest(downloadNotifierSubject:Subject<DownloadNotifierType>,appUpadateStatus:AppUpadateStatus) {
         let releaseInfo:ReleaseInfoType = this._getReleaseInfo();        
         let url = GitHubReleaseUtil.getLatestReleaseUrl(releaseInfo);
-        this._gitHubReleaseUtil.getLatestRelease(url).subscribe(response=>{
+        this._gitHubReleaseUtil.getLatestRelease(url, releaseInfo).subscribe(response=>{
             if(appUpadateStatus.updateAvailable){
                 let appNewVersion = appUpadateStatus.appReleaseInfo.version;
                 let appNameWithVersion = this.appName() + "-"+appNewVersion;

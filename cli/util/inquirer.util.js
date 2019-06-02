@@ -49,7 +49,6 @@ module.exports = {
     ];
     return inquirer.prompt(questions);
     },
-
     askRepoDetails: () => {
     const argv = require('minimist')(process.argv.slice(2));
 

@@ -3,6 +3,8 @@ const Octokit = require('@octokit/rest');
 const octokit = new Octokit();
 var log = require('single-line-log').stdout;
 const GithubPublishUtil = require('../util/github-publish.util');
+const crypto = require('crypto');
+const algorithm = 'aes-256-ctr';
 module.exports = {
     listRelease: async(ghToken,owner, repo, listCmd) => {
         try {
@@ -78,13 +80,23 @@ module.exports = {
                 await githubPublishUtil.deleteReleaseOrTag(releaseIds[i],options);
             }
         }
+    },
+
+    encryptToken: (owner, repo, value) => {
+        return _encrypt(value, owner+repo);
+    },
+
+    decryptToken: (owner, repo, value) => {
+        return _decrypt(value, owner+repo);
     }
 
     
 };
+
 var multiprog = require("./progressbar.util");
 var multi = new multiprog(process.stderr);
 var nameBarSet = [];
+
 function createBars(name,barSpace,size){
     let space = " ";
     space = space.repeat(barSpace+5);
@@ -97,6 +109,7 @@ function createBars(name,barSpace,size){
     var nameBar = {'name':name,'bar':bar};
     nameBarSet.push(nameBar);
 }    
+
 function notifyMultipleProgress(name, progress) {
     var pct = progress.percentage;
     var nextTick = Math.floor(pct);
@@ -109,5 +122,30 @@ function validateGHToken(ghToken) {
         type: 'oauth',
         token: ghToken
     });
+}
+
+function _encrypt(value,key) {
+    if (value == null) {
+        throw new Error('value must not be null or undefined');
+    }
+
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
+    const encrypted = cipher.update(String(value), 'utf8', 'hex') + cipher.final('hex');
+
+    return iv.toString('hex') + encrypted;
+}
+
+function _decrypt(value,key) {
+    if (value == null) {
+        throw new Error('value must not be null or undefined');
+    }
+
+    const stringValue = String(value);
+    const iv = Buffer.from(stringValue.slice(0, 32), 'hex');
+    const encrypted = stringValue.slice(32);
+
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+    return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
 }
 

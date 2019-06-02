@@ -33,9 +33,27 @@ export class NgxElectronInstallerUtil {
         this._clean(options,appDownloadPath);
     }
 
+    encrypt(key:string, value:string): string {
+        return this._ecrypt(key,value);
+    }
+
+    decrypt(key:string, value:string): string {
+        return this._decrypt(key,value);
+    }
+
     ngxeuUtil():NgxElectronUpdaterUtil {
         let ngxeuUtil:NgxElectronUpdaterUtil = this._electronService.remote.require('@ngxeu/util');
         return ngxeuUtil;
+    }
+
+    private _ecrypt(key:string, value:string) {
+        let ngxeuUtil:NgxElectronUpdaterUtil = this._electronService.remote.require('@ngxeu/util');
+        return ngxeuUtil.encrypt(key,value);
+    }
+
+    private _decrypt(key:string, value:string) {
+        let ngxeuUtil:NgxElectronUpdaterUtil = this._electronService.remote.require('@ngxeu/util');
+        return ngxeuUtil.decrypt(key,value);
     }
 
     private _clean(options:NgxeiOption,appDownloadPath:string) {
