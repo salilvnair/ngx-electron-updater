@@ -5,6 +5,8 @@ export class AppUpdaterConfig {
     @ReleaseInfo({
         user:"salilvnair",
         repo:"test-ngxeu",
+        isPrivate:true,
+        cliEncryptedToken: '',
         provider:Provider.github
     })
     gitReleaseUrl:string;

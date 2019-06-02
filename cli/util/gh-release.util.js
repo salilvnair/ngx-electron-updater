@@ -4,7 +4,7 @@ const octokit = new Octokit();
 var log = require('single-line-log').stdout;
 const GithubPublishUtil = require('../util/github-publish.util');
 const crypto = require('crypto');
-const algorithm = 'aes-256-ctr';
+const algorithm = 'aes-128-cbc';
 module.exports = {
     listRelease: async(ghToken,owner, repo, listCmd) => {
         try {
@@ -124,11 +124,14 @@ function validateGHToken(ghToken) {
     });
 }
 
-function _encrypt(value,key) {
+function _encrypt(value,salt) {
     if (value == null) {
         throw new Error('value must not be null or undefined');
     }
 
+    const hash = crypto.createHash("sha1");
+    hash.update(salt);
+    let key = hash.digest().slice(0, 16);
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(algorithm, key, iv);
     const encrypted = cipher.update(String(value), 'utf8', 'hex') + cipher.final('hex');
@@ -136,7 +139,7 @@ function _encrypt(value,key) {
     return iv.toString('hex') + encrypted;
 }
 
-function _decrypt(value,key) {
+function _decrypt(value,salt) {
     if (value == null) {
         throw new Error('value must not be null or undefined');
     }
@@ -144,7 +147,9 @@ function _decrypt(value,key) {
     const stringValue = String(value);
     const iv = Buffer.from(stringValue.slice(0, 32), 'hex');
     const encrypted = stringValue.slice(32);
-
+    const hash = crypto.createHash("sha1");
+    hash.update(salt);
+    let key = hash.digest().slice(0, 16);
     const decipher = crypto.createDecipheriv(algorithm, key, iv);
     return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
 }
