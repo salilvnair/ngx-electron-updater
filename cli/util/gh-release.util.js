@@ -1,6 +1,5 @@
 const chalk = require('chalk');
 const Octokit = require('@octokit/rest');
-const octokit = new Octokit();
 var log = require('single-line-log').stdout;
 const GithubPublishUtil = require('../util/github-publish.util');
 const crypto = require('crypto');
@@ -8,7 +7,7 @@ const algorithm = 'aes-128-cbc';
 module.exports = {
     listRelease: async(ghToken,owner, repo, listCmd) => {
         try {
-            validateGHToken(ghToken);
+            const octokit = initializeGHToken(ghToken);
             console.log(`${chalk.green('\nlisting '+listCmd+' releases where')}: owner=${chalk.cyan(owner)}, repo=${chalk.cyan(repo)}`);
             if(listCmd==='latest') {
                 const res = await octokit.repos.getLatestRelease({
@@ -117,11 +116,10 @@ function notifyMultipleProgress(name, progress) {
     nameBar.bar.update(nextTick/100);
 }
 
-function validateGHToken(ghToken) {
-    octokit.authenticate({
-        type: 'oauth',
-        token: ghToken
-    });
+function initializeGHToken(ghToken) {
+    return new Octokit({
+        auth: 'token '+ghToken
+      });
 }
 
 function _encrypt(value,salt) {
