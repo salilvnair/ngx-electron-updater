@@ -477,7 +477,7 @@ function ngxeuBuild(args,appName,buildCmd,pkgJsonFilePath,cont) {
     if(buildCmd) {
         runElectronBuild = buildCmd
     }
-    console.log(chalk.green('\nBuilding using command... ' +chalk.red(buildCmd)+'.'));
+    console.log(chalk.green('\nBuilding using command... ' +chalk.red(runElectronBuild)+'.'));
     if (shellJs.exec(runElectronBuild).code !== 0) {
         console.log(chalk.underline.red.bold('\nPackaging Failed... '));
         process.exit();
