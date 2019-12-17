@@ -83,7 +83,7 @@ function setInfoInPackageJson(args,rootDir) {
         electronDevDependencies["electron"] = existingDevDependencies["electron"]+"";
     }
     else{
-        electronDevDependencies["electron"] ="^4.0.1";
+        electronDevDependencies["electron"] ="^5.0.0";
     }
     if(existingDevDependencies["electron-builder"]){
         electronDevDependencies["electron-builder"] = existingDevDependencies["electron-builder"]+"";
@@ -114,7 +114,8 @@ function setInfoInPackageJson(args,rootDir) {
         "ng-build":{
             outputPath:"../<APP_NAME_STAGING>/angular/build/resources/app/build",
             archivePath:"../<APP_NAME_STAGING>/angular/build",
-            packPath:"../<APP_NAME_STAGING>/angular/dist"
+            packPath:"../<APP_NAME_STAGING>/angular/dist",
+            additionalBuildCommands: []
         }
     }
     packageJson.ngxeu = ngxeu;
