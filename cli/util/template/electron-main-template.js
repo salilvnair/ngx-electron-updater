@@ -2,8 +2,11 @@ const { app, BrowserWindow, Menu} = require("electron");
 let dev;
 const args = process.argv.slice(1);
 dev = args.some(val => val === '--dev');
-////uncomment below to hide security alert on console
-//process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1";
+//hiding security alert on console on dev environment
+//comment to disable hiding
+if(dev) {
+  process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1";
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -11,6 +14,15 @@ let browserWindow;
 
 function sendStatusToWindow(text) {
   browserWindow.webContents.send(text);
+}
+
+function aboutApp() {
+  dialog.showMessageBox({
+    type: 'none',
+    icon: __dirname + "/build/assets/images/app-logo.png",
+    message: 'App Name' ,
+    detail: 'Author: Ngx Electron Updater \nversion:'+app.getVersion()+'',
+  });
 }
 
 function createWindow() {
@@ -21,7 +33,8 @@ function createWindow() {
     height: 600,
     icon: __dirname + "/build/icon.icns",
     webPreferences: {
-      webSecurity: false
+      nodeIntegration: true, //setting this as true as in new electron version its false by default set it to true if you will need renderer process and the main process communication
+      webSecurity: false // set this as false only if your application may have CORS origin issue
     },
     autoHideMenuBar: false //auto hiding menu bar
   });
@@ -47,7 +60,9 @@ function createWindow() {
   var template = [{
     label: "Application",
     submenu: [
-        { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
+        { label: "About Application", click: function() {
+          aboutApp();
+        } },
         { type: "separator" },
         { label: "Hide", accelerator: "CmdOrCtrl+H", click: function() {
           if(browserWindow.isMenuBarVisible()){
