@@ -109,7 +109,8 @@ module.exports =  {
            //need to modify current angular.json
            //with ngxeu["ng-build"]
            modifyAngularJsonForNgBuild(args,appName,packageJson,buildCmd);
-        }        
+        }
+        buildCmd = injectAddtionalBuildCmds(buildCmd);        
     },
 
     prepareAngularBuildCmd: (args) => {
@@ -253,6 +254,21 @@ function modifyAngularJsonForNgBuild(args,appName,packageJson,buildCmd) {
         }
     }
     injectNgxeuBuildScript(packageJson,buildCmd,"./");
+}
+
+function injectAddtionalBuildCmds(buildCmd) {
+    if(packageJson.ngxeu["ng-build"].additionalBuildCommands) {
+       var additionalBuildCommands = packageJson.ngxeu["ng-build"].additionalBuildCommands;
+       let tempCommands = '';
+       for(var i = 0; i < additionalBuildCommands.length; i++) {
+            tempCommands = tempCommands + additionalBuildCommands[i];
+            if(additionalBuildCommands.length > 1 && i!== additionalBuildCommands.length-1) {
+                tempCommands = tempCommands + ' & ';
+            }
+       }
+       buildCmd = buildCmd + ' & ' + tempCommands;
+    }
+    return buildCmd;
 }
 
 function configureBuildCommandInElectronPackageJson(args,appName,packageJson) {
