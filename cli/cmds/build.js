@@ -48,10 +48,9 @@ async function processBuild(args, appName) {
 
 async function processAngularBuild(args, appName) {
     let angularBuildCmd = buildUtil.prepareAngularBuildCmd(args, appName);
-    //console.log(electronBuildCmd);
     if(angularBuildCmd){
         buildUtil.modifyPackageJson(args, appName, angularBuildCmd);
-        buildUtil.ngBuild(args,appName);
+        buildUtil.ngBuild(args, appName, angularBuildCmd);
         await buildUtil.ngPack(appName);
         buildUtil.createReleaseInfo(args,appName);
         return true;
@@ -66,10 +65,9 @@ async function processAngularBuild(args, appName) {
         process.exit();
     }
     let angularBuildCmd = buildUtil.prepareAngularBuildCmd(args, appName);
-    //console.log(electronBuildCmd);
     if(angularBuildCmd && !args["skip-ng"]){
         buildUtil.modifyPackageJson(args, appName, angularBuildCmd);
-        buildUtil.ngBuild(args,appName);
+        buildUtil.ngBuild(args, appName, angularBuildCmd);
         let electronBuildCmd = buildUtil.prepareElectronBuildCmd(args, appName);
         buildUtil.moveAndInstallElectronPackage(args,appName,electronBuildCmd); 
         if(args.icon||args.i){

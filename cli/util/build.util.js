@@ -15,11 +15,11 @@ const fsExtra = require("fs-extra");
 
 module.exports =  {
 
-    ngBuild: (args,appName) =>{
-        ngxeuBuild(args,appName,'.',false);
+    ngBuild: (args,appName,buildCmd) =>{
+        ngxeuBuild(args,appName,buildCmd,'.',false);
     },
     electronBuild:(args,appName,electronPackageJsonPath) =>{
-        ngxeuBuild(args,appName,electronPackageJsonPath,true);
+        ngxeuBuild(args,appName,null,electronPackageJsonPath,true);
     },
     ngPack:async (appName) => {
         await archiveAngularBuild(appName);
@@ -109,12 +109,14 @@ module.exports =  {
            //need to modify current angular.json
            //with ngxeu["ng-build"]
            modifyAngularJsonForNgBuild(args,appName,packageJson,buildCmd);
-        }
-        buildCmd = injectAddtionalBuildCmds(packageJson,buildCmd);        
+        }       
     },
 
     prepareAngularBuildCmd: (args) => {
-        return ngxeu_scripts["ng-build"];
+        let buildCmd =  ngxeu_scripts["ng-build"];
+        let packageJson = jsonfile.readFileSync('./package.json');
+        buildCmd = injectAddtionalBuildCmds(packageJson,buildCmd); 
+        return buildCmd;
     },
     prepareElectronBuildCmd: (args) => {
         let electron_build_cmd;
@@ -267,7 +269,7 @@ function injectAddtionalBuildCmds(packageJson, buildCmd) {
             }
        }
        buildCmd = buildCmd + ' & ' + tempCommands;
-    }
+    }    
     return buildCmd;
 }
 
@@ -462,7 +464,7 @@ function upgradePackageVersion(args,appName){
     shellJs.cd(tempPath);
 }
 
-function ngxeuBuild(args,appName,pkgJsonFilePath,cont) {
+function ngxeuBuild(args,appName,buildCmd,pkgJsonFilePath,cont) {
     let tempPath = shellJs.pwd();
     if(!cont) {
         console.log(chalk.green('\nBuilding... ' +chalk.cyan(appName)+'.'));
@@ -472,6 +474,10 @@ function ngxeuBuild(args,appName,pkgJsonFilePath,cont) {
     }
     shellJs.cd(pkgJsonFilePath);
     let runElectronBuild = "npm run ngxeu-build";
+    if(buildCmd) {
+        runElectronBuild = buildCmd
+    }
+    console.log(chalk.green('\nBuilding using command... ' +chalk.red(buildCmd)+'.'));
     if (shellJs.exec(runElectronBuild).code !== 0) {
         console.log(chalk.underline.red.bold('\nPackaging Failed... '));
         process.exit();
