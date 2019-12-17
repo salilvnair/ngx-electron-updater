@@ -110,7 +110,7 @@ module.exports =  {
            //with ngxeu["ng-build"]
            modifyAngularJsonForNgBuild(args,appName,packageJson,buildCmd);
         }
-        buildCmd = injectAddtionalBuildCmds(buildCmd);        
+        buildCmd = injectAddtionalBuildCmds(packageJson,buildCmd);        
     },
 
     prepareAngularBuildCmd: (args) => {
@@ -256,7 +256,7 @@ function modifyAngularJsonForNgBuild(args,appName,packageJson,buildCmd) {
     injectNgxeuBuildScript(packageJson,buildCmd,"./");
 }
 
-function injectAddtionalBuildCmds(buildCmd) {
+function injectAddtionalBuildCmds(packageJson, buildCmd) {
     if(packageJson.ngxeu["ng-build"].additionalBuildCommands) {
        var additionalBuildCommands = packageJson.ngxeu["ng-build"].additionalBuildCommands;
        let tempCommands = '';
