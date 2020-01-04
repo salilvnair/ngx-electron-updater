@@ -265,10 +265,10 @@ function injectAddtionalBuildCmds(packageJson, buildCmd) {
        for(var i = 0; i < additionalBuildCommands.length; i++) {
             tempCommands = tempCommands + additionalBuildCommands[i];
             if(additionalBuildCommands.length > 1 && i!== additionalBuildCommands.length-1) {
-                tempCommands = tempCommands + ' & ';
+                tempCommands = tempCommands + ' && ';
             }
        }
-       buildCmd = buildCmd + ' & ' + tempCommands;
+       buildCmd = buildCmd + ' && ' + tempCommands;
     }    
     return buildCmd;
 }
