@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Subject } from "rxjs";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { Subject, Observable } from "rxjs";
 import { GithubReleaseResponseType, GithubReleaseAsset } from "../model/github-release.model";
 import { ReleaseInfoType } from "../../type/release-info.type";
 import { AppReleaseInfo } from "../model/app-release.model";
@@ -85,19 +85,37 @@ export class GitHubReleaseUtil {
                 let releaseAsset:GithubReleaseAsset = releaseResponse.assets.find(asset=>asset.name===this._appReleaseInfoFile);
                 let observer = null;
                 if(releaseInfo.isPrivate) {
-                    const tokenSuffix = this.ngxElectronInstallerUtil.decrypt(releaseInfo.user+releaseInfo.repo,releaseInfo.cliEncryptedToken);
-                    observer = this.httpClient.get<AppReleaseInfo>(releaseAsset.browser_download_url,{headers:{'Authorization':'token '+tokenSuffix}});
+                    this.getPrivateRepoAssetDownloadUrl(releaseAsset.url, releaseInfo)
+                        .subscribe(privateRepoAssetDownloadUrl => {
+                            this.httpClient.get<AppReleaseInfo>(privateRepoAssetDownloadUrl)
+                            .subscribe(data => {
+                                latestReleaseInfo.next(data);
+                            })
+                        })
                 }
                 else {
                     observer = this.httpClient.get<AppReleaseInfo>(releaseAsset.browser_download_url);
-                }   
-                
-                observer.subscribe((data: AppReleaseInfo) => {
-                    latestReleaseInfo.next(data);
-                  });
+                    observer.subscribe((data: AppReleaseInfo) => {
+                        latestReleaseInfo.next(data);
+                    });
+                }                   
             }
         })
         return latestReleaseInfo.asObservable();
+    }
+
+    getPrivateRepoAssetDownloadUrl(latestAssetUrl: string, releaseInfo:ReleaseInfoType) : Observable<string> {
+        let privateRepoDownloadUrl :Subject<string> = new Subject<string>();
+        if(releaseInfo.isPrivate) {
+            const tokenSuffix = this.ngxElectronInstallerUtil.decrypt(releaseInfo.user+releaseInfo.repo,releaseInfo.cliEncryptedToken);
+           this.httpClient.get<AppReleaseInfo>(latestAssetUrl,{headers:{'Authorization':'token '+tokenSuffix,'Accept':'application/octet-stream'}})
+            .subscribe(
+                () => {},
+                (e: HttpErrorResponse) => {
+                    privateRepoDownloadUrl.next(e.url);
+                });
+        }
+        return privateRepoDownloadUrl.asObservable();
     }
 
     getWebProtocol(url){

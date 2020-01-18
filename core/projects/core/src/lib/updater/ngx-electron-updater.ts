@@ -148,12 +148,23 @@ export abstract class NgxElectronUpdater<T> {
         return updateStatus.asObservable();
     }
 
-    private _downloadAsset(asset:GithubReleaseAsset) {
+    private _downloadAsset(asset:GithubReleaseAsset, releaseInfo:ReleaseInfoType) {
+        let downloadNotifierSubject:Subject<DownloadNotifierType> = new Subject<DownloadNotifierType>();
         let downloadUrl = asset.browser_download_url;
-        let fileName = asset.name;
-        console.log(downloadUrl)
+        let fileName = asset.name;        
         let downloadRelativePath = this._getAppDownloadPath();
-        return this._ngxElectronInstallerUtil.download(downloadUrl, downloadRelativePath,fileName);
+        if(releaseInfo.isPrivate) {
+            this._gitHubReleaseUtil.getPrivateRepoAssetDownloadUrl(asset.url, releaseInfo)
+                                    .subscribe(privateRepoAssetDownloadUrl => {
+                                        this._ngxElectronInstallerUtil.download(privateRepoAssetDownloadUrl, downloadRelativePath,fileName).subscribe(response => {
+                                            downloadNotifierSubject.next(response);
+                                        });
+                                    })
+        }
+        else {
+            downloadNotifierSubject = this._ngxElectronInstallerUtil.download(downloadUrl, downloadRelativePath,fileName);
+        }
+        return downloadNotifierSubject;
     }
 
     private _downloadLatest(downloadNotifierSubject:Subject<DownloadNotifierType>,appUpadateStatus:AppUpadateStatus) {
@@ -164,7 +175,7 @@ export abstract class NgxElectronUpdater<T> {
                 let appNewVersion = appUpadateStatus.appReleaseInfo.version;
                 let appNameWithVersion = this.appName() + "-"+appNewVersion;
                 let newAppAsset = this._getAppZipFileAssetInfo(appNameWithVersion,response.assets);
-                this._downloadAsset(newAppAsset).subscribe(downloadNotifier=>{
+                this._downloadAsset(newAppAsset, releaseInfo).subscribe(downloadNotifier=>{
                     downloadNotifierSubject.next(downloadNotifier);
                 },error=>{},()=>{
                     downloadNotifierSubject.complete();

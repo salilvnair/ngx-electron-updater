@@ -27,24 +27,15 @@ module.exports = async (args) => {
         }
         if(args['encypt-token']||args.et){
             console.log(chalk.green('encrypting access token!'));
-            let repoDetails = github.getStoredRepoDetails(appName);
-            let accessToken = github.getStoredGithubToken(appName);
-            if(!accessToken && accessToken!='') {
-                console.log(chalk.red('No access token has been found please set one!'));
-            }
-            else {
-                let encryptedToken = ghRelease.encryptToken(repoDetails.user,repoDetails.repo,accessToken);
-                console.log(chalk.yellow('Encrypted Token: ') + chalk.cyan(encryptedToken));
-            }
+            getEncryptedToken(appName);
             process.exit();
         }
         if(args['decrypt-token']||args.dt){
             let encryptedToken = args['decrypt-token']||args.dt;
-            console.log(chalk.green('decrypting access token!'));
+            console.log(chalk.green('Token decrypted successfully !!'));
             let repoDetails = github.getStoredRepoDetails(appName);
-            let accessToken = github.getStoredGithubToken(appName);
-            if(!accessToken && accessToken!='') {
-                console.log(chalk.red('No access token has been found please set one!'));
+            if(!encryptedToken && encryptedToken!='') {
+                console.log(chalk.red('Encrypted token cannot be empty or null!'));
             }
             else {
                 let decryptedToken = ghRelease.decryptToken(repoDetails.user,repoDetails.repo,encryptedToken);
@@ -65,6 +56,19 @@ module.exports = async (args) => {
       console.error(err)
     }
   }
+
+  let getEncryptedToken = (appName) => {
+    let repoDetails = github.getStoredRepoDetails(appName);
+    let accessToken = github.getStoredGithubToken(appName);
+    if(!accessToken && accessToken!='') {
+        console.log(chalk.red('No access token has been found please set one!'));
+    }
+    else {
+        let encryptedToken = ghRelease.encryptToken(repoDetails.user,repoDetails.repo,accessToken);
+        console.log(chalk.yellow('Encrypted Token: ') + chalk.cyan(encryptedToken));
+    }
+  }
+
   let getGitHubAccessToken = async(appName) =>{
     // Check if access token for ginit was registered
     let accessToken = github.getStoredGithubToken(appName);
@@ -75,7 +79,8 @@ module.exports = async (args) => {
         return accessToken;
     }
     else{
-        console.log(chalk.yellow('Existing token found: ') + chalk.cyan(accessToken));
+        console.log(chalk.yellow('Existing token found: ') + chalk.cyan(accessToken));       
+        getEncryptedToken(appName);
     }
     return accessToken
 }
