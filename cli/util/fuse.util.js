@@ -154,13 +154,16 @@ function copyDefaultMainTemplateIntoRootDir(args,rootDir) {
     else{
         let electronMainTemplateFile = "electron-main-template.js";
         let electronMainFile = "main.js";
-        let libFolder = "js-lib";
+        let jsLibFolder = "js-lib";
+        let javaLibFolder = "java-lib";
         let electronMainTemplateFilePath = path.join(__dirname,'template',electronMainTemplateFile);
         var mainJsFileContent = fs.readFileSync(electronMainTemplateFilePath, 'utf8');    
         let mainJsCopyPath = path.join(rootDir,electronMainFile);
         fs.writeFileSync(mainJsCopyPath,mainJsFileContent);
-        let libCopyPath = path.join(rootDir,libFolder);
-        forceCreateDirIfNotExist(libCopyPath);
+        let jsLibCopyPath = path.join(rootDir,jsLibFolder);
+        forceCreateDirIfNotExist(jsLibCopyPath);
+        let javaLibCopyPath = path.join(rootDir,javaLibFolder);
+        forceCreateDirIfNotExist(javaLibCopyPath);
     }
 }
 

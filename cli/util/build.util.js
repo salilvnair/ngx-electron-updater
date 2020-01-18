@@ -134,29 +134,36 @@ module.exports =  {
     },
     showDefaultBuildConfig: (args, appName) => {
         let includeData = ngxeuIncludeData();
-        let finalFilesArray = ["**/*"]
+        let finalFilesArray = ["**/*","build","!src"];
+        let extraResources = [];
         if(includeData){
-            finalFilesArray = finalFilesArray.concat(includeData);
-            finalFilesArray.push("!src");
-        }
-        else{
-            finalFilesArray.push("build");
-            finalFilesArray.push("!src");
+            includeData.forEach(data => {
+                if (data.indexOf("from:")>-1 && data.indexOf("to:")>-1) {
+                   let fromPath = data.split(",")[0].replace("from:","");
+                   let toPath = data.split(",")[1].replace("to:","");
+                   let fromToPath = {'from':fromPath, 'to': toPath};
+                   extraResources.push(fromToPath);
+                }
+                else {
+                    extraResources.push(data);
+                }
+            })
         }
         let defautBuild = {
             "asar":false,
             "appId":appName,
             "productName":appName,
             "files": finalFilesArray,
+            "extraResources": extraResources,
             "mac": {
-            "target": [
-                "zip"
-            ]
+                "target": [
+                    "zip"
+                ]
             },
             "win": {
-            "target": [
-                "zip"
-            ]
+                "target": [
+                    "zip"
+                ]
             }
 
         }
@@ -276,20 +283,27 @@ function injectAddtionalBuildCmds(packageJson, buildCmd) {
 function configureBuildCommandInElectronPackageJson(args,appName,packageJson) {
     if(!args['no-default']){
         let includeData = ngxeuIncludeData();
-        let finalFilesArray = ["**/*"]
+        let finalFilesArray = ["**/*","build","!src"];
+        let extraResources = [];
         if(includeData){
-            finalFilesArray = finalFilesArray.concat(includeData);
-            finalFilesArray.push("!src");
-        }
-        else{
-            finalFilesArray.push("build");
-            finalFilesArray.push("!src");
+            includeData.forEach(data => {
+                if (data.indexOf("from:")>-1 && data.indexOf("to:")>-1) {
+                   let fromPath = data.split(",")[0].replace("from:","");
+                   let toPath = data.split(",")[1].replace("to:","");
+                   let fromToPath = {'from':fromPath, 'to': toPath};
+                   extraResources.push(fromToPath);
+                }
+                else {
+                    extraResources.push(data);
+                }
+            })
         }
         let defautBuild = {
             "asar":false,
             "appId":appName,
             "productName":appName,
             "files": finalFilesArray,
+            "extraResources": extraResources,
             "mac": {
                 "target": [
                     "zip"
@@ -504,9 +518,13 @@ function processElectronAsSeperateApp(args, appName, electronBuildCmd) {
     var mainJsFileContent = fs.readFileSync('./main.js', 'utf8');
     let mainJsCopyPath = path.join(newElectronRootPath,"main.js");
     fs.writeFileSync(mainJsCopyPath,mainJsFileContent);
-    let libCopyPath = path.join(newElectronRootPath,"js-lib");
+    let jsLibCopyPath = path.join(newElectronRootPath,"js-lib");
+    let javaLibCopyPath = path.join(newElectronRootPath,"java-lib");
     if(fs.existsSync("./js-lib")){
-        fsExtra.copySync("./js-lib", libCopyPath);
+        fsExtra.copySync("./js-lib", jsLibCopyPath);
+    }
+    if(fs.existsSync("./java-lib")){
+        fsExtra.copySync("./java-lib", javaLibCopyPath);
     }
     return newElectronRootPath;
 }
