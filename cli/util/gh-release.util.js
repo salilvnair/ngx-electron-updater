@@ -22,7 +22,13 @@ module.exports = {
             });
             return res.data;
         } catch (err) {
-            console.error(chalk.red("Error:"),err);
+            if(err.status === 404) {
+                console.log(chalk.red("No previous releases found!!"));
+                return [];
+            }
+            else {
+                console.error(chalk.red("Error:"),err);
+            }
         }
     },
 

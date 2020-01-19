@@ -139,7 +139,7 @@ module.exports = async (args) => {
             console.log(chalk.red('\nError:app-release.json is missing please build this app using command: ')+chalk.cyan('ngxeu build '+appName)+' and then publish!');
             process.exit();
         }
-        if(releaseVersionExist(releases,tag,name) && !draft){
+        if(releases && releaseVersionExist(releases,tag,name) && !draft){
             console.log(chalk.red('\nError:App with same version has been published already!, please use a different version to publish a new release.\nor delete this version using '+chalk.cyan('ngxeu publish '+appName+' -d -tag='+tag)));
             process.exit();
         }

@@ -14,3 +14,4 @@ export * from './lib/updater/github/model/download-status.model';
 export * from './lib/updater/decorator/download-info.decorator';
 export * from './lib/updater/decorator/download-path-suffix.decorator';
 export * from './lib/updater/decorator/release-info.decorator';
+export * from './lib/updater/util/electron-update-notifier.util';
